@@ -46,8 +46,14 @@ jobs:
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: tauri-build
-          path: <dir>
+      - name: Find
+        if: matrix.platform != 'windows-latest'
+        run: find .
+      - name: Tree
+        if: matrix.platform == 'windows-latest'
+        run: tree /F
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: tauri-build
+      #     path: <dir>
