@@ -1,0 +1,13 @@
+name: Call On Commit Actions
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
