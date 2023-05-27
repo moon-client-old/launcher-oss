@@ -20,7 +20,7 @@ jobs:
         if: matrix.platform == 'ubuntu-20.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev libgtk-3-dev
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
@@ -46,14 +46,8 @@ jobs:
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
-      - name: Find
-        if: matrix.platform != 'windows-latest'
-        run: find .
-      - name: Tree
-        if: matrix.platform == 'windows-latest'
-        run: tree /F
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: tauri-build
-      #     path: <dir>
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tauri-build
+          path: <dir>
