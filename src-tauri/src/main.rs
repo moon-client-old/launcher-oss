@@ -1,21 +1,24 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use crate::api::moon::auth::AuthenticationEndpointData;
+use crate::gui::LauncherState;
 use crate::proprietary::{SerialProvideError, PROPRIETARY_LIBRARY};
+use tauri::async_runtime::Mutex;
 
+mod api;
+mod gui;
 mod proprietary;
 mod storage;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 fn main() {
-    unsafe { println!("{:#?}", proprietary::fetch_serial()) }
+    let serial = unsafe { proprietary::fetch_serial() };
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .manage(Mutex::new(LauncherState {
+            serial: serial.unwrap(),
+            session_token: "".to_string(),
+        }))
+        .invoke_handler(tauri::generate_handler![gui::greet])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("error while running gui application");
 }
