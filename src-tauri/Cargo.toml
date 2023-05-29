@@ -1,10 +1,10 @@
 [package]
-name = "moon-launcher-oss"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+name = "moon-launcher"
+version = "1.0.0"
+description = "A launcher for Moon"
+authors = ["lennox", "oad"]
+license = "GPL-3.0"
+repository = "https://github.com/moon-client/launcher-oss"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

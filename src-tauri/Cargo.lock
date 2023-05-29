@@ -1646,8 +1646,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "moon-launcher-oss"
-version = "0.0.0"
+name = "moon-launcher"
+version = "1.0.0"
 dependencies = [
  "directories",
  "downloader",
