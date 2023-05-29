@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "moon-launcher-oss",
-    "version": "0.0.0"
+    "productName": "moon-launcher",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -37,9 +37,12 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "moon-launcher-oss",
+        "title": "Moon Launcher",
         "width": 800,
-        "height": 600
+        "height": 600,
+        
+        "minWidth": 420,
+        "minHeight": 380
       }
     ]
   }
