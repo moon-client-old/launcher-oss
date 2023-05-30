@@ -8,11 +8,23 @@
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: 400;
+
   @apply bg-slate-800;
   color: #ffffff;
 }
 
-/* TODO fix this shit, but im 2 seconds away from a mental breakdown so ill just do this */
+:root::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+
+    background: radial-gradient(circle, rgba(28, 100, 242, 0.6), rgba(30, 41, 59, 1));
+    filter: blur(50px);
+
+    z-index: -9999;
+}
 
 html, body {
   height: 100%;

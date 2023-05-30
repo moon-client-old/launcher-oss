@@ -41,8 +41,8 @@
         "width": 800,
         "height": 600,
         
-        "minWidth": 420,
-        "minHeight": 380
+        "minWidth": 480,
+        "minHeight": 448
       }
     ]
   }

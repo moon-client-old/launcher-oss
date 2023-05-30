@@ -1,15 +1,20 @@
 <script>
-    import {invoke} from "@tauri-apps/api/tauri"
+    import { invoke } from "@tauri-apps/api/tauri";
+
     import Button from "../lib/Button.svelte";
     import Toggle from "../lib/Toggle.svelte";
+    import Alert from "$lib/Alert.svelte";
 
     let uid;
+    let error_visible = false;
 
     function sign_in() {
+        error_visible = !error_visible;
         // TODO: backend implementation
         invoke("login", {
             uid: uid
         });
+
     }
 
     function on_remember_update(new_state) {
@@ -21,13 +26,12 @@
 </script>
 
 <main class="flex flex-col h-full justify-center items-center">
+    <img width="45px" src="https://moonclient.xyz/logo.png" class="mb-1 mr-1" alt="branding"/>
     <div class="flex flex-row items-center mb-6">
-        <img width="45px" src="https://moonclient.xyz/logo.png" alt="branding"/>
-        <p class="ml-4 text-lg text-gray-200"><b style='font-weight: 800'>Moon</b> Client</p>
+        <p class="text-lg text-gray-200"><b style='font-weight: 800'>Moon</b> Client</p>
     </div>
 
-    <div class="absolute radial-pricing-bg w-full h-full" style="z-index: -100"></div>
-    <div class="bg-slate-700/[0.5] border border-slate-50/[0.1] w-80 max-w-md rounded-lg px-4 py-4" style="backdrop-filter: blur(100px)">
+    <div class="bg-slate-700/[0.25] border border-slate-50/[0.15] w-80 max-w-md rounded-lg px-4 py-4" style="backdrop-filter: blur(100px)">
         <h2 class="font-bold text-center text-2xl">Sign in</h2>
         <h2 class="text-center text-gray-300 text-xs">to the launcher</h2>
         <label class="flex flex-col mt-4 text-sm font-semibold">
@@ -38,13 +42,8 @@
 
         <Toggle text="Remember me" default_state="true" on:click={ on_remember_update }/>
 
+        <Alert bind:visible={ error_visible } text="Failed to login, please try again later." type="ERROR" />
+
         <Button text="Sign in" on:click={ sign_in }></Button>
     </div>
 </main>
-
-<style>
-    .radial-pricing-bg {
-        background: radial-gradient(550px 550px, rgba(28, 100, 242, 0.6), rgba(30, 41, 59, 1));
-        filter: blur(50px);
-    }
-</style>
