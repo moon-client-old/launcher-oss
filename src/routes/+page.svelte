@@ -4,10 +4,8 @@
 
     import Button from "../lib/component/Button.svelte";
     import Toggle from "../lib/component/Toggle.svelte";
-    import Alert from "$lib/component/Alert.svelte";
 
     let uid;
-    let error_visible = false;
 
     function sign_in() {        
         // TODO: backend implementation
@@ -32,7 +30,7 @@
         <p class="text-lg text-gray-200"><b style='font-weight: 800'>Moon</b> Client</p>
     </div>
 
-    <div class="bg-slate-700/[0.25] border border-slate-50/[0.15] w-80 max-w-md rounded-lg px-4 py-4" style="backdrop-filter: blur(100px)">
+    <div class="space-y-2 bg-slate-700/[0.25] border border-slate-50/[0.15] w-80 max-w-md rounded-lg px-4 py-4" style="backdrop-filter: blur(100px)">
         <h2 class="font-bold text-center text-2xl">Sign in</h2>
         <h2 class="text-center text-gray-300 text-xs">to the launcher</h2>
         <label class="flex flex-col mt-4 text-sm font-semibold">
@@ -42,8 +40,6 @@
         </label>
 
         <Toggle text="Remember me" default_state="true" on:click={ on_remember_update }/>
-
-        <Alert bind:visible={ error_visible } text="Failed to login, please try again later." type="ERROR" />
 
         <Button text="Sign in" on:click={ sign_in }></Button>
     </div>
