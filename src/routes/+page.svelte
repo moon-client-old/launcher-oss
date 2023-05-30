@@ -1,20 +1,21 @@
 <script>
     import { invoke } from "@tauri-apps/api/tauri";
+    import { goto } from "$app/navigation";
 
-    import Button from "../lib/Button.svelte";
-    import Toggle from "../lib/Toggle.svelte";
-    import Alert from "$lib/Alert.svelte";
+    import Button from "../lib/component/Button.svelte";
+    import Toggle from "../lib/component/Toggle.svelte";
+    import Alert from "$lib/component/Alert.svelte";
 
     let uid;
     let error_visible = false;
 
-    function sign_in() {
-        error_visible = !error_visible;
+    function sign_in() {        
         // TODO: backend implementation
         invoke("login", {
-            uid: uid
-        });
+                uid: uid
+            });
 
+        goto("/launcher")
     }
 
     function on_remember_update(new_state) {
