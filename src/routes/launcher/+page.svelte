@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { Notification, addNotification } from '$lib/notif/NotifHandler';
+	import {
+		Notification,
+		NotificationType,
+		addNotification,
+	} from '$lib/notif/NotifHandler';
 	import Button from '../../lib/component/Button.svelte';
 
 	import SideBar from '../../lib/general/SideBar.svelte';
@@ -34,7 +38,7 @@
 								new Notification(
 									'Not implemented',
 									'This feature is not implemented yet.',
-									'warning',
+									NotificationType.Warn,
 									10e3,
 									true,
 									[]

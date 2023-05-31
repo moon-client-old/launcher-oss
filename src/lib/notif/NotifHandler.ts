@@ -1,5 +1,7 @@
 // Notif State Handler
+import type { IconSource } from '@steeze-ui/heroicons/types';
 import { writable } from 'svelte/store';
+import jsf32 from './RNG';
 
 /** Action Interface */
 export interface IAction {
@@ -11,16 +13,24 @@ export interface IAction {
 	metadata?: any,
 }
 
+/** ID Generator | using rng + id to prevent collisions */
+const getId = (() => {
+	const base = Date.now();
+	let id = 0;
+	const rng = jsf32(Date.now() + Math.random(), Math.random(), Math.random(), Math.random());
+	return () => `${base.toString(16)}-${(++id).toString(16)}-${rng(0, 1e9).toString(36)}`;
+})();
+
 /** Notification Interface */
 type INotification = {
 	/** Identification used for removing it */
-	id?: number,
+	id?: string,
 	/** Notification title */
 	title: string | null,
 	/** Notification message */
-	message: string,
+	message: string | null,
 	/** Notification type */
-	type: 'success' | 'error' | 'warning' | 'info',
+	type: NotificationType,
 	/** Notification duration */
 	duration: number,
 	/** Notification timestamp */
@@ -28,20 +38,51 @@ type INotification = {
 	/** Notification expiry */
 	expires_at: number,
 	/** Notification Actions */
+	actions?: IAction[],
+	/** Icon */
+	icon?: IconSource | null,
+}
+
+/** Notification Type | giant list ik */
+export const enum NotificationType {
+	/** Success */
+	Success = 'success',
+	/** Success */
+	Ok = 'success',
+	/** Error */
+	Error = 'error',
+	/** Error */
+	Err = 'error',
+	/** Error */
+	Fail = 'error',
+	/** Error */
+	NotOk = 'error',
+	/** Warning */
+	Warning = 'warning',
+	/** Warning */
+	Warn = 'warning',
+	/** Info */
+	Info = 'info',
+	/** Info */
+	Inf = 'info',
+	/** Info */
+	Notice = 'info',
 }
 
 /** Notification Class */
 export class Notification implements INotification {
 	/** Notification ID */
-	id: number = 0;
+	id: string = '';
 	/** Notification title */
 	title: string | null = null;
 	/** Notification message */
-	message: string = '';
+	message: string | null = null;
 	/** Notification type */
-	type: 'success' | 'error' | 'warning' | 'info' = 'info';
+	type: NotificationType = NotificationType.Info;
 	/** Notification duration */
 	#duration: number = 0;
+	/** Icon */
+	icon: IconSource | null = null;
 	/** Notification duration */
 	get duration(): number {
 		return this.#duration;
@@ -74,23 +115,18 @@ export class Notification implements INotification {
 	actions: IAction[] = [];
 
 	/** Notification Class Constructor */
-	constructor(_title: string | null, _message: string | null, type: 'success' | 'error' | 'warning' | 'info' | null = 'info', duration: number | null = 5000, dismissable: boolean = true, actions: IAction[] = []) {
-		this.id = Math.floor(Math.random() * 1000000000);
-		let title: string | null = _title;
-		let message: string | null = _message;
-		if (message === null) {
-			message = _title;
-			title = null;
-		}
-		if (message === null) throw new Error('Notification must have a message')
+	constructor(title: string | null, message: string | null = null, type: NotificationType | null = NotificationType.Info, duration: number | null = 5000, dismissable: boolean = true, actions: IAction[] = [], icon: IconSource | null = null) {
+		this.id = getId();
+		if (message === null && title === null) throw new Error('Notification must have a message or a title')
 		this.title = title;
 		this.message = message;
-		this.type = type ?? 'info';
+		this.type = type ?? NotificationType.Info;
 		this.duration = duration ?? 5000;
 		this.#timestamp = Date.now();
 		this.#expires_at = this.timestamp + this.duration;
 		this.dismissable = dismissable;
 		this.actions = actions;
+		this.icon = icon;
 	}
 
 	/** Import from Notification */

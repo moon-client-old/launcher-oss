@@ -5,11 +5,16 @@
 	import Button from '../lib/component/Button.svelte';
 	import Toggle from '../lib/component/Toggle.svelte';
 	import { userContext, UserContext, UserRank } from '../stores.ts';
-	import { addNotification, Notification } from '$lib/notif/NotifHandler';
+	import {
+		addNotification,
+		Notification,
+		NotificationType,
+	} from '$lib/notif/NotifHandler';
 
 	let uid;
-
-	async function sign_in() {
+	const unknownMessage =
+		'An unknown error occurred, please create an issue on GitHub';
+	const sign_in = async () => {
 		// TODO: backend implementation
 		await invoke('login', {
 			uid: uid,
@@ -23,6 +28,14 @@
 					JSON.stringify(response)
 				);
 				goto('/launcher');
+				addNotification(
+					new Notification(
+						'Logged in!',
+						'Logged in successfully',
+						NotificationType.Ok,
+						3e3
+					)
+				);
 			})
 			.catch((err) => {
 				let errorMessage = null;
@@ -31,22 +44,24 @@
 					errorMessage = err[error].message;
 				}
 				// If there is no message an unknown error occurred
-				if (errorMessage == null) {
-					errorMessage =
-						'An unknown error occurred, please create an issue on GitHub';
+				if (errorMessage === null || errorMessage === undefined) {
+					errorMessage = unknownMessage;
 				}
 				addNotification(
 					new Notification(
 						'Login Error',
 						errorMessage,
-						`error`,
+						NotificationType.Err,
 						100000,
 						true,
 						[
 							{
 								name: 'Copy',
 								callback: 'copy-text',
-								metadata: errorMessage,
+								metadata:
+									errorMessage === unknownMessage
+										? `${err}`
+										: errorMessage,
 							},
 						]
 					)
@@ -54,14 +69,14 @@
 				console.log(errorMessage);
 				console.log(err);
 			});
-	}
+	};
 
-	function on_remember_update(new_state) {
+	const on_remember_update = (new_state) => {
 		// TODO: backend implementation
 		invoke('set_remember_state', {
 			state: new_state,
 		});
-	}
+	};
 </script>
 
 <main class="flex flex-col h-full justify-center items-center">
