@@ -1,5 +1,7 @@
 import {writable} from "svelte/store";
 
+// The user context created from the authentication data, contains the username,
+// rank and all channels the user has access to
 export class UserContext {
     username: string;
     rank: UserRank;
@@ -19,6 +21,8 @@ export class UserContext {
     }
 }
 
+// The channel definition containing its name, description, latest version,
+// the last update as a unix timestamp and all available versions for download
 export class Channel {
     name: string;
     description: string;
@@ -41,6 +45,8 @@ export class Channel {
     }
 }
 
+// The channel version definition containing its id (folder-name in versions directory), name,
+// changelog and the release time as a unix timestamp
 export class Version {
     id: string;
     name: string;
@@ -63,3 +69,12 @@ export enum UserRank {
 }
 
 export const userContext = writable(new UserContext())
+
+// Restore context if available in local storage
+let localStoredContext = localStorage.getItem("userContextData")
+if (localStoredContext) {
+    let newContext = new UserContext()
+    newContext.serialize(JSON.parse(localStoredContext))
+    userContext.update(_ => newContext)
+    console.log("[DEBUG] Restored user context from local storage")
+}

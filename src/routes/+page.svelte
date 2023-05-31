@@ -17,6 +17,7 @@
             let userData = new UserContext();
             userData.serialize(response)
             userContext.update(_ => userData);
+            localStorage.setItem("userContextData", JSON.stringify(response))
             goto("/launcher")
         }).catch((err) => {
             let errorMessage = null;
