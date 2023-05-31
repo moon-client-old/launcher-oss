@@ -32,7 +32,6 @@
 					<Button
 						class="w-24"
 						full="false"
-						text="Install"
 						on:click={() => {
 							addNotification(
 								new Notification(
@@ -44,8 +43,8 @@
 									[]
 								)
 							);
-						}}
-					/>
+						}}>Install</Button
+					>
 				</div>
 			</div>
 		{/each}

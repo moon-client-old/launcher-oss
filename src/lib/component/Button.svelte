@@ -19,7 +19,6 @@
 	export let color: ButtonTheme = 'BLUE';
 	export let icon: IconSource | undefined = undefined;
 	export let full: string = 'true';
-	export let text: string = 'Button';
 
 	const dispatch = createEventDispatcher<{
 		click: void;
@@ -39,5 +38,5 @@
 		<Icon class="w-6 h-full mr-2" src={icon} />
 	{/if}
 
-	{text}
+	<slot />
 </button>

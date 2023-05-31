@@ -109,13 +109,11 @@
 				/>
 			</label>
 
-			<Toggle
-				text="Remember me"
-				default_state="true"
-				on:click={on_remember_update}
-			/>
+			<Toggle default_state="true" on:click={on_remember_update}>
+				Remember me
+			</Toggle>
 
-			<Button text="Sign in" on:click={sign_in} />
+			<Button on:click={sign_in}>Sign in</Button>
 		</div>
 	</div>
 </main>
