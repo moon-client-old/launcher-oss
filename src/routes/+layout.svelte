@@ -1,6 +1,12 @@
 <script lang="ts">
 	import Fonts from '$lib/Fonts/Fonts.svelte';
+	import NotifHost from '$lib/notif/NotifHost.svelte';
+	import { onMount } from 'svelte';
 	import '../app.css';
+	import { svelteMount } from '$lib/notif/NotifHandler';
+	onMount(() => {
+		svelteMount();
+	});
 </script>
 
 <svelte:head>
@@ -8,6 +14,8 @@
 </svelte:head>
 
 <slot />
+
+<NotifHost />
 
 <style lang="scss">
 	$scrollbarBgTrack: #1f2028;

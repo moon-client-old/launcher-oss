@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
-	export let thumb = 'rgb(29,78,216)';
-	export let background = '#35394d';
+	export let thumb = "rgb(29,78,216)";
+	export let background = "#35394d";
 	/** should be thumb under almost any circumstance */
 	export let track = thumb;
 	export let value = 0;
@@ -24,20 +24,20 @@
 		input: string;
 		textbox: string;
 	}> = {
-		range: '/*blank*/',
-		rangeContainer: '/*blank*/',
-		rangeProgressOverlay: '/*blank*/',
-		textbox: '/*blank*/',
-		input: '/*blank*/',
+		range: "/*blank*/",
+		rangeContainer: "/*blank*/",
+		rangeProgressOverlay: "/*blank*/",
+		textbox: "/*blank*/",
+		input: "/*blank*/",
 	};
 	$: progress = ((value - min) / (max - min)) * 100;
 	let isLinux = false;
 	onMount(() => {
-		isLinux = navigator.userAgent.includes('Linux');
+		isLinux = navigator.userAgent.includes("Linux");
 	});
 </script>
 
-{@html `<!-- value: ${typeof value === 'number' ? value : 'no-xss-pls-ty'} -->`}
+{@html `<!-- value: ${typeof value === "number" ? value : "no-xss-pls-ty"} -->`}
 <div
 	class="range"
 	style="--bg:{background};--thumb:{thumb};--track:{track};{styles.rangeContainer}"
@@ -64,7 +64,7 @@
 </div>
 {#if textbox}
 	<div class="input" style={styles.input}>
-		{textbox.split('$input$')[0] ?? ''}<input
+		{textbox.split("$input$")[0] ?? ""}<input
 			type="number"
 			bind:value
 			{step}
@@ -72,7 +72,7 @@
 			{max}
 			style="width:{value.toString().length}ch;{styles.textbox}"
 			on:blur={onUnfocus}
-		/>{textbox.split('$input$')[1] ?? ''}
+		/>{textbox.split("$input$")[1] ?? ""}
 	</div>
 {/if}
 
@@ -83,7 +83,7 @@
 		width: 100%;
 		position: relative;
 
-		input[type='range'] {
+		input[type="range"] {
 			background: var(--bg, #35394d);
 			height: $size;
 			border-radius: 25px;
@@ -143,7 +143,7 @@
 	.input {
 		display: flex;
 
-		> input[type='number'] {
+		> input[type="number"] {
 			border: none;
 			background: transparent;
 			color: inherit;
