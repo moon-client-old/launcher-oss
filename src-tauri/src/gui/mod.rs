@@ -17,6 +17,7 @@ pub async fn greet(
 ) -> Result<String, ()> {
     let mut state = state.lock().await;
     println!("{}", state.session_token);
+    println!("{:?}", authenticate(&state, 2).await);
     state.session_token = "Insane".to_string();
     Ok(name.to_string())
 }

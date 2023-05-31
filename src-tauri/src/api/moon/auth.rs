@@ -31,6 +31,7 @@ use serde::{Deserialize, Serialize};
 /// ```json
 /// {
 ///     "username": "USERNAME",
+///     "rank": "ADMIN",
 ///     "session_key": "RANDOM_SESSION_KEY",
 ///     "available_channels": [
 ///         {
@@ -63,6 +64,7 @@ pub struct AuthenticationEndpointData {
 #[derive(Debug, Deserialize)]
 pub struct AuthenticationResponseData {
     username: String,
+    rank: UserRank,
     session_key: String,
     available_channels: Vec<Channel>,
 }
