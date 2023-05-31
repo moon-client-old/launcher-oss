@@ -30,4 +30,6 @@ dist-ssr
 /.svelte-kit
 /package
 
-package-lock.json
+# pnpm lockfile
+pnpm-lock.yaml
+#package-lock.json should be kept in repo assuming pnpm is the primary package manager; lockfiles are meant to always stay in the repo

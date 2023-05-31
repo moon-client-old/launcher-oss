@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// ## Error Code Definition
 /// - 0: Invalid login request received, please open a GitHub issue
-/// - 1: Please make sure you set both a HWID and an username through the discord bot
+/// - 1: Please make sure you set both a HWID and a username through the discord bot
 /// - 2: Your HWID does not match, please create a HWID reset
 /// - 3: No user with the UID you entered could be found, please make sure you entered your UID correctly
 /// - 4: Internal server error, please create a ticket
@@ -155,7 +155,7 @@ pub async fn authenticate(
     if status != StatusCode::OK {
         return Err(match content.as_str() {
             "0" => InvalidLoginRequest { message: "Invalid login request received, please open a GitHub issue" },
-            "1" => InvalidUserAccount { message: "Please make sure you set both a HWID and an username through the discord bot" },
+            "1" => InvalidUserAccount { message: "Please make sure you set both a HWID and a username through the discord bot" },
             "2" => HwidMismatch { message: "Your HWID does not match, please create a HWID reset" },
             "3" => NoUserFound { message: "No user with the UID you entered could be found, please make sure you entered your UID correctly" },
             "4" => InternalServerError { message: "Internal server error, please create a ticket" },
