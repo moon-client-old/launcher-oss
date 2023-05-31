@@ -20,7 +20,7 @@ use serde::Deserialize;
 /// - 0: Your session expired, please restart the launcher
 /// - 1: You are currently rate-limited, please wait one minute
 /// - 2: Internal server error, please create a ticket
-/// - 3: Please make sure you set both a HWID and an username through the discord bot
+/// - 3: Please make sure you set both a HWID and a username through the discord bot
 /// - 4: You don't have enough permissions to download this channel
 /// <br><br>
 ///
@@ -111,7 +111,7 @@ pub async fn request_download(
             },
             "3" => InvalidUserAccount {
                 message:
-                    "Please make sure you set both a HWID and an username through the discord bot",
+                    "Please make sure you set both a HWID and a username through the discord bot",
             },
             "4" => InsufficientPermissions {
                 message: "You don't have enough permissions to download this ",
