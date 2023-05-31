@@ -26,7 +26,7 @@ jobs:
     #   - name: Download Tauri Build
     #     uses: actions/download-artifact@v3
     #     with:
-    #       name: gui-build
+    #       name: tauri-build
     #       path: .
     #   - name: Setup Pages
     #     uses: actions/configure-pages@v3

@@ -1,4 +1,4 @@
-# Builds & uploads a gui build to the artifact 'gui-build'
+# Builds & uploads a tauri build to the artifact 'tauri-build'
 name: Build Tauri Application
 on:
   workflow_call:
@@ -28,7 +28,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-gui -> target'
+          workspaces: './src-tauri -> target'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -44,7 +44,7 @@ jobs:
         run: pnpm i
 
       - name: Build the app
-        uses: gui-apps/gui-action@v0
+        uses: tauri-apps/tauri-action@v0
 
       - name: Find
         if: matrix.platform != 'win'
@@ -56,5 +56,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: gui-build-${{matrix.platform}}
-          path: src-gui/target/release/moon-launcher-oss${{matrix.platform=='win' && '.exe' || ''}}
+          name: tauri-build-${{matrix.platform}}
+          path: src-tauri/target/release/moon-launcher-oss${{matrix.platform=='win' && '.exe' || ''}}
