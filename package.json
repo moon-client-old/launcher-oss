@@ -1,31 +1,34 @@
 {
-  "name": "moon-launcher-oss",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "tauri": "tauri"
-  },
-  "dependencies": {
-    "@tauri-apps/api": "^1.3.0"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.0.0",
-    "@tauri-apps/cli": "^1.3.1",
-    "@tsconfig/svelte": "^3.0.0",
-    "@types/node": "^18.7.10",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.23",
-    "svelte": "^3.54.0",
-    "svelte-check": "^3.0.0",
-    "svelte-preprocess": "^5.0.0",
-    "tailwindcss": "^3.3.2",
-    "tslib": "^2.4.1",
-    "typescript": "^4.9.5",
-    "vite": "^4.2.1"
-  }
+    "name": "moon-launcher-oss",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "tauri": "tauri"
+    },
+    "dependencies": {
+        "@steeze-ui/heroicons": "^2.2.2",
+        "@steeze-ui/svelte-icon": "^1.3.2",
+        "@tauri-apps/api": "^1.3.0"
+    },
+    "devDependencies": {
+        "@rgossiaux/svelte-headlessui": "^1.0.2",
+        "@sveltejs/adapter-static": "^1.0.0-next.50",
+        "@sveltejs/kit": "^1.5.0",
+        "@tauri-apps/cli": "^1.3.1",
+        "autoprefixer": "^10.4.14",
+        "postcss": "^8.4.24",
+        "svelte": "^3.54.0",
+        "svelte-check": "^3.0.1",
+        "svelte-popperjs": "^1.3.2",
+        "tailwindcss": "^3.3.2",
+        "tslib": "^2.4.1",
+        "typescript": "^5.0.0",
+        "vite": "^4.3.0"
+    }
 }

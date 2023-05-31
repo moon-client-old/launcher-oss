@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.env
+.env.*
+!.env.example
+
+/build
+/.svelte-kit
+/package
+
+package-lock.json
