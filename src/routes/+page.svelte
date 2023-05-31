@@ -48,18 +48,21 @@
         <p class="text-lg text-gray-200"><b style='font-weight: 800'>Moon</b> Client</p>
     </div>
 
-    <div class="space-y-2 bg-slate-700/[0.25] border border-slate-50/[0.15] w-80 max-w-md rounded-lg px-4 py-4"
+    <div class="bg-slate-700/[0.25] border border-slate-50/[0.15] w-80 max-w-md rounded-lg px-4 py-4"
          style="backdrop-filter: blur(100px)">
         <h2 class="font-bold text-center text-2xl">Sign in</h2>
         <h2 class="text-center text-gray-300 text-xs">to the launcher</h2>
-        <label class="flex flex-col mt-4 text-sm font-semibold">
-            <span class="mb-1">UID</span>
-            <input class="bg-slate-800/[0.6] border border-slate-50/[0.15] border rounded-lg mt-0.5 p-2.5 transition-colors outline-0 focus:border-blue-500 focus:ring-blue-500 block"
-                   required bind:value={ uid }>
-        </label>
-
-        <Toggle text="Remember me" default_state="true" on:click={ on_remember_update }/>
-
-        <Button text="Sign in" on:click={ sign_in }></Button>
+        
+        <div class="space-y-2">
+            <label class="flex flex-col mt-4 text-sm font-semibold">
+                <span class="mb-1">UID</span>
+                <input class="bg-slate-800/[0.6] border border-slate-50/[0.15] border rounded-lg mt-0.5 p-2.5 transition-colors outline-0 focus:border-blue-500 focus:ring-blue-500 block"
+                       required bind:value={ uid }>
+            </label>
+    
+            <Toggle text="Remember me" default_state="true" on:click={ on_remember_update }/>
+    
+            <Button text="Sign in" on:click={ sign_in }></Button>
+        </div>
     </div>
 </main>
