@@ -1,7 +1,15 @@
 <script lang="ts">
-    import { shell } from "@tauri-apps/api";
-    
+    import { get } from "svelte/store";
+
     import SideBar from "../../../lib/general/SideBar.svelte";
+    import { UserContext, userContext } from "../../../stores";
+
+
+    let context: UserContext = get(userContext);
+    // Make sure to subscribe to future changes (if any happen, very unlikely)
+    userContext.subscribe(value => {
+        context = value;
+    });
 
     let date = new Date();
 </script>
@@ -13,7 +21,7 @@
         <p class="text-sm text-slate-400">&copy; 2018 - { date.getFullYear() } Moon Client (Do not redistribute)</p>
         <p class="text-sm text-slate-400">
             Licensed to 
-            <b class="font-bold">Lennox</b>
+            <b class="font-bold">{ context.username }</b>
         </p>
         <div class="space-x-2 mt-4">
             <a class="text-blue-400 hover:text-blue-500 transition" target="_blank" href="https://moonclient.xyz/terms">Terms of Service</a>
