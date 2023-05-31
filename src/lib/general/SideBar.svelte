@@ -28,30 +28,9 @@
     function log_out() {
         goto("/");
     }
-
-    const solutions = [
-        {
-            name: "Insights",
-            description: "Measure actions your users take",
-            href: "##",
-            icon: InformationCircle,
-        },
-        {
-            name: "Automations",
-            description: "Create your own targeted content",
-            href: "##",
-            icon: InformationCircle,
-        },
-        {
-            name: "Reports",
-            description: "Keep track of your growth",
-            href: "##",
-            icon: InformationCircle,
-        },
-    ];
 </script>
 
-<div class="flex flex-col items-center bg-slate-700/[0.25] border-r border-slate-50/[0.15] min-w-fit w-60 h-full px-2 pt-3 pb-0 shadow-xl overflow-hidden"
+<div class="fixed top-0 flex flex-col items-center bg-slate-700/[0.25] border-r border-slate-50/[0.15] min-w-fit w-60 h-full px-2 pt-3 pb-0 shadow-xl overflow-hidden"
      style="backdrop-filter: blur(100px);">
     <div class="flex flex-row self-start items-center justify-center mb-6 mt-1.5 ml-4">
         <img width="25px" src="https://moonclient.xyz/logo.png" alt="branding"/>
@@ -63,7 +42,7 @@
     </div>
 
     <div class="w-full gap-2 items-center mt-auto">
-        <SidebarRedirectionButton low="true" class="mb-1" icon={ Cog6Tooth } text="Settings" url="/launcher/settings"/>
+        <SidebarRedirectionButton class="mb-1" low="true" icon={ Cog6Tooth } text="Settings" url="/launcher/settings"/>
         <SidebarRedirectionButton class="mb-3" low="true" icon={ InformationCircle } text="About"
                                   url="/launcher/about"/>
         <Popover class="relative" style="max-width: 15rem;" let:open>

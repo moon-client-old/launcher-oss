@@ -25,17 +25,18 @@
 
     import { createEventDispatcher } from "svelte";
 
-    let clazz: string | undefined;
+    let clazz: string = "";
     export { clazz as class };
     
     export let color: ButtonTheme = "BLUE";
-    export let icon: IconSource | undefined;
+    export let icon: IconSource | undefined = undefined;
+    export let full: string = "true";
     export let text: string = "Button";
 
     const dispatch = createEventDispatcher();
 </script>
 
-<button class="w-full { color_translation[color][0] } rounded-lg text-sm py-2.5 { color_translation[color][1] } transition { clazz }" on:click={ () => dispatch("click") }>
+<button class="{ clazz } { full == "true" && "w-full" } { color_translation[color][0] } rounded-lg text-sm py-2.5 { color_translation[color][1] } transition" on:click={ () => dispatch("click") }>
     {#if icon}
         <Icon class="w-6 h-full mr-2" src={ icon } />
     {/if}
