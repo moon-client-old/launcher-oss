@@ -32,7 +32,7 @@ html, body {
 
 .launcher-container {
     padding: .75rem .75rem;
-    padding-left: 15.75rem ;
+    padding-left: 15.75rem;
 }
 
  input[type=range]::-webkit-slider-thumb {
