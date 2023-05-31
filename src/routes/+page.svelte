@@ -40,7 +40,7 @@
 						'Login Error',
 						errorMessage,
 						`error`,
-						1000,
+						100000,
 						true,
 						[
 							{

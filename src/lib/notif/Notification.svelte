@@ -35,12 +35,11 @@
 </script>
 
 <div
-        class="notif {notification.type} {actions.length > 2? 'btnbottom' : 'btnleft'}"
-        style="flex-direction: {actions.length > 2 ? 'column' : 'row'}"
+        class="notif {notification.type} flex-col"
 >
     <div class="p-3">
         <div class="flex flex-row">
-            <Icon class="w-8 mr-3" src={ ExclamationCircle }></Icon>
+            <Icon class="w-9 mr-3" src={ ExclamationCircle }></Icon>
             <div>
                 {#if notification.title}
                     <div class="font-bold">{notification.title}</div>
@@ -52,27 +51,27 @@
                 </div>
             </div>
         </div>
+        <div class="pt-1" style="padding-left: 38px">
+            {#if actions.length > 0}
+                {#each actions as action}
+                    <button
+                            class="bg-slate-900 mr-2 rounded-md py-1 px-1.5 text-xs text-neutral-300"
+                            on:click={() => {
+    					if (action.callback) {
+    						const result = (
+    							callbacks[action.callback] ??
+    							generateFallbackCallback(action.callback)
+    						)(action, notification);
+    						if (result) notification.dismiss();
+    					}
+    				}}
+                    >
+                        {action.name}
+                    </button>
+                {/each}
+            {/if}
+        </div>
     </div>
-    <!--{#if actions.length > 0}-->
-    <!--	<div class="notif-actions">-->
-    <!--		{#each actions as action}-->
-    <!--			<button-->
-    <!--				class="notif-action"-->
-    <!--				on:click={() => {-->
-    <!--					if (action.callback) {-->
-    <!--						const result = (-->
-    <!--							callbacks[action.callback] ??-->
-    <!--							generateFallbackCallback(action.callback)-->
-    <!--						)(action, notification);-->
-    <!--						if (result) notification.dismiss();-->
-    <!--					}-->
-    <!--				}}-->
-    <!--			>-->
-    <!--				{action.name}-->
-    <!--			</button>-->
-    <!--		{/each}-->
-    <!--	</div>-->
-    <!--{/if}-->
 </div>
 
 <style lang="scss">
@@ -82,6 +81,7 @@
   $infoAccent: #77c9ff;
   $successAccent: #77ff77ff;
   $warningAccent: #ffff77ff;
+  $baseColor: #1e293b;
   .notif {
     display: flex;
     background: var(--background, #fff2);
@@ -94,22 +94,22 @@
 
     &.error {
       --accent: #{$errorAccent};
-      --background: #{color.adjust($errorAccent, $alpha: -0.7)};
+      --background: #{color.adjust($errorAccent, $blackness: +100%, $alpha: -0.7)};
     }
 
     &.info {
       --accent: #{$infoAccent};
-      --background: #{color.adjust($infoAccent, $alpha: -0.7)};
+      --background: #{color.adjust($infoAccent, $blackness: +100%, $alpha: -0.7)};
     }
 
     &.success {
       --accent: #{$successAccent};
-      --background: #{color.adjust($successAccent, $alpha: -0.7)};
+      --background: #{color.adjust($successAccent, $blackness: +100%, $alpha: -0.7)};
     }
 
     &.warning {
       --accent: #{$warningAccent};
-      --background: #{color.adjust($warningAccent, $alpha: -0.7)};
+      --background: #{color.adjust($warningAccent, $blackness: +100%, $alpha: -0.7)};
     }
 
     &::before,
@@ -123,7 +123,7 @@
       left: 0;
       background: var(--accent);
       opacity: 0.2;
-      filter: blur(32px);
+      filter: blur(25px);
       pointer-events: none;
     }
 
@@ -133,68 +133,6 @@
 
     &::after {
       z-index: 3;
-    }
-
-    &.btnleft {
-      .notif-actions {
-        margin-left: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        > .notif-action {
-          border-left: 1px solid #fff2;
-
-          &:first-child {
-            border-bottom: 1px solid #fff2;
-            border-top-right-radius: 0.5rem;
-          }
-
-          &:last-child {
-            border-bottom-right-radius: 0.5rem;
-          }
-        }
-      }
-    }
-
-    &.btnbottom {
-      flex-direction: column;
-
-      .notif-content {
-        padding: 1rem 1rem 1rem 1rem;
-      }
-
-      .notif-actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-
-        > .notif-action {
-          border-top: 1px solid #fff2;
-
-          &:not(:first-child) {
-            border-left: 1px solid #fff2;
-          }
-
-          &:first-child {
-            border-bottom-left-radius: 0.5rem;
-          }
-
-          &:last-child {
-            border-bottom-right-radius: 0.5rem;
-          }
-        }
-      }
-    }
-
-    .notif-actions {
-      > .notif-action {
-        flex: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0.5rem;
-      }
     }
   }
 </style>
