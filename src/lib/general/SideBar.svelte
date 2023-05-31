@@ -31,7 +31,7 @@
 
 <div class="fixed top-0 flex flex-col items-center bg-slate-700/[0.25] border-r border-slate-50/[0.15] min-w-fit w-60 h-full px-2 pt-3 pb-0 shadow-xl overflow-hidden"
      style="backdrop-filter: blur(100px);">
-    <div class="flex flex-row self-start items-center justify-center mb-6 mt-1.5 ml-4">
+    <div class="flex self-start items-center justify-center mb-6 mt-1.5 ml-4">
         <img width="25px" src="https://moonclient.xyz/logo.png" alt="branding"/>
         <p class="ml-3 text-lg text-gray-200"><b style='font-weight: 700'>Moon</b> Client</p>
     </div>
