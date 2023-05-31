@@ -1,5 +1,7 @@
 use crate::api;
-use crate::api::moon::auth::{authenticate, AuthenticationEndpointData};
+use crate::api::moon::auth::{
+    authenticate, AuthenticationEndpointData, AuthenticationError, AuthenticationResponseData,
+};
 use tauri::async_runtime::Mutex;
 
 /// Contains things required multiple times throughout the runtime process
@@ -11,13 +13,16 @@ pub struct LauncherState {
 }
 
 #[tauri::command]
-pub async fn greet(
+pub async fn login(
     state: tauri::State<'_, Mutex<LauncherState>>,
-    name: &str,
-) -> Result<String, ()> {
+    uid: &str,
+) -> Result<AuthenticationResponseData, AuthenticationError> {
     let mut state = state.lock().await;
-    println!("{}", state.session_token);
-    println!("{:?}", authenticate(&state, 2).await);
-    state.session_token = "Insane".to_string();
-    Ok(name.to_string())
+    let uid_i = uid.parse::<i64>().unwrap_or(0);
+    let authentication_data = authenticate(&state, uid_i).await;
+    // Update the session token if possible
+    if let Ok(data) = &authentication_data {
+        state.session_token = data.session_key.clone()
+    }
+    authentication_data
 }

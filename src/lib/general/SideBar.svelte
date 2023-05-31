@@ -8,6 +8,14 @@
     import {Icon} from "@steeze-ui/svelte-icon";
     import SidebarRedirectionButton from "$lib/general/SidebarRedirectionButton.svelte";
     import SidebarButton from "$lib/general/SidebarButton.svelte";
+    import {get} from "svelte/store";
+    import {UserContext, userContext} from "../../stores";
+
+    let context: UserContext = get(userContext);
+    // Make sure to subscribe to future changes (if any happen, very unlikely)
+    userContext.subscribe(value => {
+        context = value;
+    });
 
     const [popperRef, popperContent] = createPopperActions();
 
@@ -62,15 +70,16 @@
             <PopoverButton class="inline-flex w-full" use={[popperRef]}>
                 <div class="grow border-t border-slate-600/[0.9] flex items-center space-x-2 py-3 pr-2">
                     <div class="inline-flex items-center justify-center w-9 h-9 overflow-hidden rounded-full bg-slate-600">
-                        <span class="font-medium text-gray-600 dark:text-gray-300">L</span>
+                        <span class="font-medium text-gray-600 dark:text-gray-300">{context.username.substring(0, 1).toUpperCase()}</span>
                     </div>
                     <div class="flex-grow text-left dark:text-white">
-                        <div class="text-white font-semibold overflow-ellipsis overflow-hidden whitespace-nowrap text-sm" style="max-width: 8rem">
-                            Lennox
+                        <div class="text-white font-semibold overflow-ellipsis overflow-hidden whitespace-nowrap text-sm"
+                             style="max-width: 8rem">
+                            {context.username}
                         </div>
                         <div class="text-gray-400 font-semibold overflow-ellipsis overflow-hidden whitespace-nowrap"
                              style="font-size: 0.6rem">
-                            Admin
+                            {context.rank}
                         </div>
                     </div>
                     <Icon class="shrink-0 w-5 h-5" src={ ChevronUpDown }/>

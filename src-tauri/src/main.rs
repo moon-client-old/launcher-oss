@@ -18,6 +18,7 @@ fn main() {
             serial: serial.unwrap(),
             session_token: "".to_string(),
         }))
+        .invoke_handler(tauri::generate_handler![gui::login])
         .run(tauri::generate_context!())
         .expect("error while running gui application");
 }

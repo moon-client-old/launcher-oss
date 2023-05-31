@@ -3,7 +3,7 @@
 </script>
 
 <div class="flex gap-x-2 h-full">
-    <SideBar />
+    <SideBar/>
     <div>
         TODO: implement settings
     </div>

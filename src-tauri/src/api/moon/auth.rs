@@ -61,12 +61,12 @@ pub struct AuthenticationEndpointData {
 }
 
 /// Contains the response data as described in the [AuthenticationEndpointData] documentation
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AuthenticationResponseData {
-    username: String,
-    rank: UserRank,
-    session_key: String,
-    available_channels: Vec<Channel>,
+    pub username: String,
+    pub rank: UserRank,
+    pub session_key: String,
+    pub available_channels: Vec<Channel>,
 }
 
 /// The channel struct containing all information about an available channel
@@ -125,7 +125,7 @@ impl Endpoint for AuthenticationEndpointData {
 }
 
 /// All different errors with their mappings which can occur upon login
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum AuthenticationError {
     RequestFailed,
     JsonParseError,
