@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
 
-    let clazz: string | undefined;
+    let clazz: string = "";
     export { clazz as class };
 
     export let text: string;
