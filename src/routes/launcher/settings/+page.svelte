@@ -2,7 +2,7 @@
     import SideBar from "../../../lib/general/SideBar.svelte";
 </script>
 
-<div class="flex gap-x-2 h-full px-3 py-2">
+<div class="flex gap-x-2 h-full">
     <SideBar />
     <div>
         TODO: implement settings
