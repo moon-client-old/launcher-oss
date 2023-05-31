@@ -14,10 +14,10 @@ export default defineConfig(async () => ({
     }),
   ],
 
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+  // Vite options tailored for Tauri development and only applied in `gui dev` or `gui build`
   // prevent vite from obscuring rust errors
   clearScreen: false,
-  // tauri expects a fixed port, fail if that port is not available
+  // gui expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
     strictPort: true,
