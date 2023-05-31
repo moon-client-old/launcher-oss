@@ -5,7 +5,7 @@
 	let memory = 2048;
 </script>
 
-<SideBar />
+<SideBar/>
 <div class="launcher-container">
 	<div
 		class="items-center bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-xl px-5 py-5"
