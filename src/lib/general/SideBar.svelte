@@ -12,10 +12,6 @@
     import {UserContext, userContext} from "../../stores";
 
     let context: UserContext = get(userContext);
-    // Make sure to subscribe to future changes (if any happen, very unlikely)
-    userContext.subscribe(value => {
-        context = value;
-    });
 
     const [popperRef, popperContent] = createPopperActions();
 
@@ -26,6 +22,9 @@
     };
 
     function log_out() {
+        // Empty the user context in both local storage and writable
+        userContext.update(_ => new UserContext());
+        localStorage.removeItem("userContextData");
         goto("/");
     }
 </script>
@@ -65,10 +64,11 @@
                 </div>
             </PopoverButton>
             {#if open}
-                <div transition:fly="{{ y: 5, duration: 200 }}">
+                <div transition:fly|local="{{ y: 5, duration: 200 }}">
                     <PopoverPanel static use={[[popperContent, popperOptions]]}
                                   class="bg-slate-700 border border-slate-50/[0.15] rounded-lg mb-96 w-full z-10 p-2">
-                        <SidebarButton class="w-full" low="true" icon={ ArrowLeftOnRectangle } text="Logout"/>
+                        <SidebarButton class="w-full" low="true" icon={ ArrowLeftOnRectangle } on:click={ log_out }
+                                       text="Logout"/>
                     </PopoverPanel>
                 </div>
             {/if}

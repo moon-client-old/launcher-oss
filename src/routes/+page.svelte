@@ -5,7 +5,6 @@
     import Button from "../lib/component/Button.svelte";
     import Toggle from "../lib/component/Toggle.svelte";
     import {userContext, UserContext, UserRank} from "../stores.ts";
-    import {get} from "svelte/store";
 
     let uid;
 
