@@ -5,7 +5,7 @@
         registerCallback,
         type Notification,
         NotificationType,
-    } from './NotifHandler';
+    } from './NotificationHandler';
     import {onMount} from 'svelte';
     import {Icon} from '@steeze-ui/svelte-icon';
     import {
@@ -13,9 +13,10 @@
         ExclamationCircle,
         ExclamationTriangle,
         InformationCircle,
-        QuestionMarkCircle,
+        QuestionMarkCircle, XMark,
     } from '@steeze-ui/heroicons';
     import type {IconSource} from '@steeze-ui/heroicons/types';
+    import Button from "$lib/component/Button.svelte";
 
     const md = markdownIt({
         breaks: true,
@@ -126,7 +127,7 @@
     display: flex;
     background: var(--background, #fff2);
     backdrop-filter: blur(10px);
-    border-radius: 0.5rem;
+    border-radius: 0.6rem;
     width: 100%;
     border: 1px solid var(--accent);
     position: relative;

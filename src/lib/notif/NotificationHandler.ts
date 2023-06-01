@@ -1,7 +1,7 @@
 // Notif State Handler
 import type { IconSource } from '@steeze-ui/heroicons/types';
 import { writable } from 'svelte/store';
-import jsf32 from './RNG';
+import jsf32 from './Random';
 
 /** Action Interface */
 export interface IAction {

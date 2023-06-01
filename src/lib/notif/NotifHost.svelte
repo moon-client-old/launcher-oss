@@ -5,7 +5,7 @@
         registerCallback,
         Notification as Notif,
         NotificationType,
-    } from './NotifHandler';
+    } from './NotificationHandler';
     import Notification from './Notification.svelte';
     import {flip} from 'svelte/animate';
     import {fade, fly} from 'svelte/transition';

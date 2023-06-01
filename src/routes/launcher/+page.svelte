@@ -3,7 +3,7 @@
 		Notification,
 		NotificationType,
 		addNotification,
-	} from '$lib/notif/NotifHandler';
+	} from '$lib/notif/NotificationHandler';
 	import Button from '../../lib/component/Button.svelte';
 
 	import SideBar from '../../lib/general/SideBar.svelte';

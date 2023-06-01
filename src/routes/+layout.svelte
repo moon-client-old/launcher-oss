@@ -3,7 +3,7 @@
 	import NotifHost from '$lib/notif/NotifHost.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
-	import { svelteMount } from '$lib/notif/NotifHandler';
+	import { svelteMount } from '$lib/notif/NotificationHandler';
 	onMount(async () => {
 		svelteMount();
 		while (document.getElementById('linux-font-moment') == null) {
