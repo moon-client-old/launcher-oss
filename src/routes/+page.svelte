@@ -1,28 +1,73 @@
-<script>
+<script lang="ts">
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { goto } from '$app/navigation';
 
 	import Button from '../lib/component/Button.svelte';
 	import Toggle from '../lib/component/Toggle.svelte';
-	import { userContext, UserContext, UserRank } from '../stores.ts';
-	import { addNotification, Notification } from '$lib/notif/NotifHandler';
+	import { userContext, UserContext, UserRank } from '../stores';
+	import {
+		addNotification,
+		Notification,
+		NotificationType,
+	} from '$lib/notif/NotifHandler';
 
-	let uid;
+	let uid: string = '';
+	let lastUid: string = '';
+	// force number
+	$: {
+		const _uid = uid.trim();
+		if (_uid === '' || _uid === '0x' || _uid === '0b') {
+			lastUid = uid;
+		} else if (isNaN(Number(_uid))) {
+			uid = lastUid;
+		} else {
+			lastUid = uid;
+		}
+	}
+	const unknownMessage =
+		'An unknown error occurred, please create an issue on GitHub';
+	export let remember_me = true;
+	/** Sets if we should save the user */
+	const save_remember_state = () => {
+		console.log(remember_me);
 
-	async function sign_in() {
+		invoke('set_remember_state', {
+			state: remember_me,
+		});
+	};
+	const sign_in = async () => {
 		// TODO: backend implementation
+		uid = Number(uid.trim()).toString(); // convert to decimal
+		if (uid === 'NaN')
+			return addNotification(
+				new Notification(
+					'Invalid UID',
+					'Please enter a valid UID',
+					NotificationType.Err,
+					3e3
+				)
+			);
 		await invoke('login', {
 			uid: uid,
 		})
 			.then(async (response) => {
+				// get user data
 				let userData = new UserContext();
-				userData.serialize(response);
+				userData.serialize(response as object);
 				userContext.update((_) => userData);
 				localStorage.setItem(
 					'userContextData',
 					JSON.stringify(response)
 				);
 				goto('/launcher');
+				addNotification(
+					new Notification(
+						'Logged in!',
+						'Logged in successfully',
+						NotificationType.Ok,
+						3e3
+					)
+				);
 			})
 			.catch((err) => {
 				let errorMessage = null;
@@ -31,22 +76,24 @@
 					errorMessage = err[error].message;
 				}
 				// If there is no message an unknown error occurred
-				if (errorMessage == null) {
-					errorMessage =
-						'An unknown error occurred, please create an issue on GitHub';
+				if (errorMessage === null || errorMessage === undefined) {
+					errorMessage = unknownMessage;
 				}
 				addNotification(
 					new Notification(
 						'Login Error',
 						errorMessage,
-						`error`,
+						NotificationType.Err,
 						100000,
 						true,
 						[
 							{
 								name: 'Copy',
 								callback: 'copy-text',
-								metadata: errorMessage,
+								metadata:
+									errorMessage === unknownMessage
+										? `${err}`
+										: errorMessage,
 							},
 						]
 					)
@@ -54,14 +101,7 @@
 				console.log(errorMessage);
 				console.log(err);
 			});
-	}
-
-	function on_remember_update(new_state) {
-		// TODO: backend implementation
-		invoke('set_remember_state', {
-			state: new_state,
-		});
-	}
+	};
 </script>
 
 <main class="flex flex-col h-full justify-center items-center">
@@ -94,13 +134,11 @@
 				/>
 			</label>
 
-			<Toggle
-				text="Remember me"
-				default_state="true"
-				on:click={on_remember_update}
-			/>
+			<Toggle bind:checked={remember_me} on:click={save_remember_state}
+				>Remember me</Toggle
+			>
 
-			<Button text="Sign in" on:click={sign_in} />
+			<Button on:click={sign_in}>Sign in</Button>
 		</div>
 	</div>
 </main>
