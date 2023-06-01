@@ -38,5 +38,5 @@
 		<Icon class="w-6 h-full mr-2" src={icon} />
 	{/if}
 
-	<slot />
+	<slot>Button</slot>
 </button>

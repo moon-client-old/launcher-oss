@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import type { IconSource } from '@steeze-ui/heroicons/types';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { createEventDispatcher } from 'svelte';
@@ -36,5 +35,5 @@
 			src={icon}
 		/>
 	{/if}
-	<slot />
+	<slot><em>{text}</em></slot>
 </button>

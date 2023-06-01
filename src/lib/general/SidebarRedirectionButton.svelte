@@ -6,7 +6,7 @@
 	let clazz: string = '';
 	export { clazz as class };
 
-	export let text: string = '';
+	export let text: string = 'Button';
 	export let icon: IconSource | undefined;
 	export let url: string;
 	export let low: boolean = false;
@@ -41,5 +41,5 @@
 			src={icon}
 		/>
 	{/if}
-	{text}<slot />
+	<slot><em>{text}</em></slot>
 </a>
