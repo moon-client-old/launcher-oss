@@ -4,14 +4,12 @@
 	let clazz: string = '';
 	export { clazz as class };
 
-	export let default_state: string;
-
 	const dispatch = createEventDispatcher();
-	let state = default_state == 'true';
+	export let checked: boolean = false;
 
 	const on_click = () => {
-		state = !state;
-		dispatch('click', state);
+		checked = !checked;
+		dispatch('click', checked);
 	};
 </script>
 
@@ -19,7 +17,7 @@
 	<input
 		type="checkbox"
 		class="sr-only peer"
-		bind:checked={state}
+		bind:checked
 		on:click={on_click}
 	/>
 	<div
