@@ -10,7 +10,7 @@
     import {flip} from 'svelte/animate';
     import {fade, fly} from 'svelte/transition';
     // global utility callbacks
-    registerCallback('dismiss-notif', () => true);
+    registerCallback('dismiss-notification', () => true);
     registerCallback('copy-text', (action, notif) => {
         if (navigator.clipboard) {
             if (!notif.message) console.warn('No Notification Message');

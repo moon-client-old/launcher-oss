@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Fonts from '$lib/Fonts/Fonts.svelte';
-	import NotifHost from '$lib/notif/NotifHost.svelte';
+	import Fonts from '$lib/fonts/Fonts.svelte';
+	import NotifHost from '$lib/notification/NotifHost.svelte';
 	import { onMount } from 'svelte';
 	import '../app.css';
-	import { svelteMount } from '$lib/notif/NotificationHandler';
+	import { svelteMount } from '$lib/notification/NotificationHandler';
 	onMount(async () => {
 		svelteMount();
 		while (document.getElementById('linux-font-moment') == null) {

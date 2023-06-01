@@ -34,7 +34,7 @@
     $: actions = [
         ...(notification.actions ?? []),
         ...(notification.dismissable
-            ? [{name: 'Dismiss', callback: 'dismiss-notif'}]
+            ? [{name: 'Dismiss', callback: 'dismiss-notification'}]
             : []),
     ];
     const generateFallbackCallback = (callback: string) => () => {

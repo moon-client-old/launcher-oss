@@ -9,7 +9,7 @@
 		addNotification,
 		Notification,
 		NotificationType,
-	} from '$lib/notif/NotificationHandler';
+	} from '$lib/notification/NotificationHandler';
 
 	let uid: string = '';
 	let lastUid: string = '';

@@ -18,7 +18,10 @@ fn main() {
             serial: serial.unwrap(),
             session_token: "".to_string(),
         }))
-        .invoke_handler(tauri::generate_handler![gui::login])
+        .invoke_handler(tauri::generate_handler![
+            gui::login,
+            gui::get_max_available_memory
+        ])
         .run(tauri::generate_context!())
         .expect("error while running gui application");
 }

@@ -2,6 +2,7 @@ use crate::api;
 use crate::api::moon::auth::{
     authenticate, AuthenticationEndpointData, AuthenticationError, AuthenticationResponseData,
 };
+use sys_info::{Error, MemInfo};
 use tauri::async_runtime::Mutex;
 
 /// Contains things required multiple times throughout the runtime process
@@ -10,6 +11,15 @@ use tauri::async_runtime::Mutex;
 pub struct LauncherState {
     pub serial: String,
     pub session_token: String,
+}
+
+#[tauri::command]
+pub async fn get_max_available_memory() -> u64 {
+    let info = match sys_info::mem_info() {
+        Ok(info) => info,
+        Err(_) => return 0,
+    };
+    info.total
 }
 
 #[tauri::command]
