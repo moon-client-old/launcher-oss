@@ -1,9 +1,11 @@
-use crate::api;
-use crate::api::moon::auth::{
-    authenticate, AuthenticationEndpointData, AuthenticationError, AuthenticationResponseData,
-};
-use sys_info::{Error, MemInfo};
+use sys_info::MemInfo;
 use tauri::async_runtime::Mutex;
+
+use crate::api::moon::auth::{authenticate, AuthenticationError, AuthenticationResponseData};
+use crate::storage::types::LoginSettingData;
+use crate::storage::StorageType;
+
+pub mod login;
 
 /// Contains things required multiple times throughout the runtime process
 /// This struct is managed by gui and can be used in every gui command
@@ -11,6 +13,20 @@ use tauri::async_runtime::Mutex;
 pub struct LauncherState {
     pub serial: String,
     pub session_token: String,
+    pub cached_login_data: Option<LoginSettingData>,
+}
+
+#[tauri::command]
+pub async fn load_serial(state: tauri::State<'_, Mutex<LauncherState>>) -> Result<(), ()> {
+    let mut guard = state.lock().await;
+    let serial = unsafe {
+        match crate::proprietary::fetch_serial() {
+            Ok(serial) => serial,
+            _ => return Err(()),
+        }
+    };
+    guard.serial = serial;
+    Ok(())
 }
 
 #[tauri::command]
@@ -20,19 +36,4 @@ pub async fn get_max_available_memory() -> u64 {
         Err(_) => return 0,
     };
     info.total
-}
-
-#[tauri::command]
-pub async fn login(
-    state: tauri::State<'_, Mutex<LauncherState>>,
-    uid: &str,
-) -> Result<AuthenticationResponseData, AuthenticationError> {
-    let mut state = state.lock().await;
-    let uid_i = uid.parse::<i64>().unwrap_or(0);
-    let authentication_data = authenticate(&state, uid_i).await;
-    // Update the session token if possible
-    if let Ok(data) = &authentication_data {
-        state.session_token = data.session_key.clone()
-    }
-    authentication_data
 }

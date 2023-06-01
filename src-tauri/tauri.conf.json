@@ -38,6 +38,7 @@
         "fullscreen": false,
         "resizable": true,
         "title": "Moon Launcher",
+        "url": "launcher/loading",
         "width": 800,
         "height": 600,
         
