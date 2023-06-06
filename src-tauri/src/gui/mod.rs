@@ -1,11 +1,10 @@
-use sys_info::MemInfo;
 use tauri::async_runtime::Mutex;
 
-use crate::api::moon::auth::{authenticate, AuthenticationError, AuthenticationResponseData};
-use crate::storage::types::LoginSettingData;
-use crate::storage::StorageType;
+use crate::api::moon::auth::{AuthenticationError, AuthenticationResponseData};
+use crate::storage::types::{GameSettingData, LoginSettingData};
 
 pub mod login;
+pub mod settings;
 
 /// Contains things required multiple times throughout the runtime process
 /// This struct is managed by gui and can be used in every gui command
@@ -14,6 +13,7 @@ pub struct LauncherState {
     pub serial: String,
     pub session_token: String,
     pub cached_login_data: Option<LoginSettingData>,
+    pub cached_game_state: Option<GameSettingData>,
 }
 
 #[tauri::command]

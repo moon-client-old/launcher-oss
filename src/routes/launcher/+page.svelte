@@ -7,6 +7,7 @@
 	import Button from '../../lib/component/Button.svelte';
 
 	import SideBar from '../../lib/general/SideBar.svelte';
+	import {fade} from "svelte/transition";
 
 	let channels = [
 		{
@@ -18,7 +19,7 @@
 </script>
 
 <SideBar />
-<div class="launcher-container">
+<div class="launcher-container" in:fade={{duration:500}}>
 	<div class="flex flex-col gap-y-2 w-full">
 		{#each channels as channel}
 			<div

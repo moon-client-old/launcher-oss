@@ -3,13 +3,14 @@
 
     import SideBar from "../../../lib/general/SideBar.svelte";
     import {UserContext, userContext} from "../../../stores";
+    import {fade} from "svelte/transition";
 
     let context: UserContext = get(userContext);
     let date = new Date();
 </script>
 
 <SideBar/>
-<div class="launcher-container">
+<div class="launcher-container" in:fade={{duration:500}}>
     <div class="items-center bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-lg px-5 py-5 shadow-lg"
          style="backdrop-filter: blur(100px)">
         <h2 class="text-xl font-bold mb-2">Moon Launcher</h2>

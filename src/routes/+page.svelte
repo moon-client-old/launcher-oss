@@ -88,7 +88,7 @@
                         'Login Error',
                         errorMessage,
                         NotificationType.Err,
-                        100000,
+                        5000,
                         true,
                         [
                             {
