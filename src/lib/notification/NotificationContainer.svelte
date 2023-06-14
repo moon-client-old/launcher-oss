@@ -22,9 +22,9 @@
                     NotificationType.Success
                 )
             );
-        } else
-            alert(`Your browser does not support copying to clipboard.
-Message: ${notif.message}`);
+        } else {
+            alert(`Your browser does not support copying to clipboard. Message: ${notif.message}`);
+        }
         return true;
     });
 </script>

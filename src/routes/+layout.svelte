@@ -1,6 +1,6 @@
 <script lang="ts">
     import Fonts from '$lib/fonts/Fonts.svelte';
-    import NotifHost from '$lib/notification/NotifHost.svelte';
+    import NotifHost from '$lib/notification/NotificationContainer.svelte';
     import {onMount} from 'svelte';
     import '../app.css';
     import {svelteMount} from '$lib/notification/NotificationHandler';

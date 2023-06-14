@@ -59,12 +59,26 @@
                 return QuestionMarkCircle;
         }
     })();
+    let backgroundColor: String = (() => {
+        switch(notification.type) {
+            case NotificationType.Error:
+                return "#ef4444";
+            case NotificationType.Info:
+                return "#eab308";
+            case NotificationType.Success:
+                return "#22c55e";
+            case NotificationType.Warning:
+                return "#f97316";
+            default:
+                return "";
+        }
+    })();
 </script>
 
 <div class="notif {notification.type} flex-col">
     <div class="p-3">
         <div class="flex flex-row">
-            <Icon style="min-width: 26px; min-height: 26px; width: 26px; height: 26px"
+            <Icon style="min-width: 29px; min-height: 29px; width: 29px; height: 29px; border-radius: 5px; padding: 3px; background-color: {backgroundColor}; color: white"
                   class="mr-3"
                   src={notification.icon ?? autoselectedIcon}
             />
@@ -125,50 +139,14 @@
   $baseColor: #1e293b;
   .notif {
     display: flex;
-    background: var(--background, #fff2);
+    background: rgba(20,20,20,0.1);
     backdrop-filter: blur(10px);
     border-radius: 0.6rem;
     width: 100%;
-    border: 1px solid var(--accent);
+    border: 1px solid rgb(71, 85, 105);
     position: relative;
     z-index: 2;
     transition: 0.5s;
-
-    &.error {
-      --accent: #{$errorAccent};
-      --background: #{color.adjust(
-					$errorAccent,
-					$blackness: +100%,
-					$alpha: -0.7
-				)};
-    }
-
-    &.info {
-      --accent: #{$infoAccent};
-      --background: #{color.adjust(
-					$infoAccent,
-					$blackness: +100%,
-					$alpha: -0.7
-				)};
-    }
-
-    &.success {
-      --accent: #{$successAccent};
-      --background: #{color.adjust(
-					$successAccent,
-					$blackness: +100%,
-					$alpha: -0.7
-				)};
-    }
-
-    &.warning {
-      --accent: #{$warningAccent};
-      --background: #{color.adjust(
-					$warningAccent,
-					$blackness: +100%,
-					$alpha: -0.7
-				)};
-    }
 
     &::before,
     &::after {
@@ -179,7 +157,6 @@
       position: absolute;
       top: 0;
       left: 0;
-      background: var(--accent);
       opacity: 0.2;
       filter: blur(25px);
       pointer-events: none;

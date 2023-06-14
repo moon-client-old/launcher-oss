@@ -15,7 +15,7 @@
                 'Hardware Error',
                 "Device serial fetching has failed, please open an issue on GitHub",
                 NotificationType.Err,
-                10000,
+                10000000,
                 true
             )
         );
