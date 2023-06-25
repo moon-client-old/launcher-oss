@@ -146,6 +146,7 @@
     position: relative;
     z-index: 2;
     transition: 0.5s;
+    min-width: 250px;
 
     &::before,
     &::after {

@@ -49,7 +49,7 @@
 			alt="branding"
 		/>
 		<p class="ml-3 text-lg text-gray-200">
-			<b class="weight-700">Moon</b> Client
+			<b class="weight-800">Moon</b> Client
 		</p>
 	</div>
 
@@ -127,8 +127,8 @@
 <style lang="scss">
 	.main {
 		backdrop-filter: blur(100px);
-		.weight-700 {
-			font-weight: 700;
+		.weight-800 {
+			font-weight: 800;
 		}
 		.mw-15rem {
 			max-width: 15rem;

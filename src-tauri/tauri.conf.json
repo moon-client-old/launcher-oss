@@ -39,11 +39,11 @@
         "resizable": true,
         "title": "Moon Launcher",
         "url": "launcher/loading",
-        "width": 800,
-        "height": 600,
+        "width": 900,
+        "height": 650,
         
-        "minWidth": 720,
-        "minHeight": 480
+        "minWidth": 900,
+        "minHeight": 650
       }
     ]
   }
