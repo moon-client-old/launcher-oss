@@ -7,15 +7,15 @@
         NotificationType,
     } from './NotificationHandler';
     import {onMount} from 'svelte';
-    import {Icon} from '@steeze-ui/svelte-icon';
+    import {Icon} from 'svelte-hero-icons';
     import {
         CheckCircle,
         ExclamationCircle,
         ExclamationTriangle,
         InformationCircle,
         QuestionMarkCircle, XMark,
-    } from '@steeze-ui/heroicons';
-    import type {IconSource} from '@steeze-ui/heroicons/types';
+    } from 'svelte-hero-icons';
+    import type {IconSource} from 'svelte-hero-icons';
     import Button from "$lib/component/Button.svelte";
 
     const md = markdownIt({

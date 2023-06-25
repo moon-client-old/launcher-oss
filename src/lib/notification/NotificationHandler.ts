@@ -1,5 +1,5 @@
 // Notif State Handler
-import type { IconSource } from '@steeze-ui/heroicons/types';
+import type { IconSource } from 'svelte-hero-icons';
 import { writable } from 'svelte/store';
 import jsf32 from './Random';
 

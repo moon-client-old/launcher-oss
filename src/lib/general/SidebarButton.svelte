@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { IconSource } from '@steeze-ui/heroicons/types';
-	import { Icon } from '@steeze-ui/svelte-icon';
+	import type { IconSource } from 'svelte-hero-icons';
+	import { Icon } from 'svelte-hero-icons';
 	import { createEventDispatcher } from 'svelte';
 
 	let clazz: string = '';
@@ -33,6 +33,7 @@
 			style="width: 20px; height: 20px"
 			class="h-full mr-2 text-neutral-400 transition-all"
 			src={icon}
+			solid
 		/>
 	{/if}
 	<slot><em>{text}</em></slot>

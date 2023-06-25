@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { IconSource } from '@steeze-ui/heroicons/types';
-	import { Icon } from '@steeze-ui/svelte-icon';
+	import type { IconSource } from 'svelte-hero-icons';
+	import { Icon } from 'svelte-hero-icons';
 
 	let clazz: string = '';
 	export { clazz as class };
@@ -39,6 +39,7 @@
 				? 'text-white'
 				: ''} transition-all"
 			src={icon}
+			solid
 		/>
 	{/if}
 	<slot><em>{text}</em></slot>

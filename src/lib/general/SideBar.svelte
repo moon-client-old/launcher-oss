@@ -6,7 +6,7 @@
 		Cog6Tooth,
 		GlobeAlt,
 		InformationCircle,
-	} from '@steeze-ui/heroicons';
+	} from 'svelte-hero-icons';
 	import {
 		Popover,
 		PopoverButton,
@@ -15,7 +15,7 @@
 	import { fly } from 'svelte/transition';
 
 	import { createPopperActions } from 'svelte-popperjs';
-	import { Icon } from '@steeze-ui/svelte-icon';
+	import { Icon } from 'svelte-hero-icons';
 	import SidebarRedirectionButton from '$lib/general/SidebarRedirectionButton.svelte';
 	import SidebarButton from '$lib/general/SidebarButton.svelte';
 	import { get } from 'svelte/store';
