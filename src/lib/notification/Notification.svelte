@@ -59,27 +59,27 @@
                 return QuestionMarkCircle;
         }
     })();
-    let backgroundColor: String = (() => {
+    let color: String = (() => {
         switch(notification.type) {
             case NotificationType.Error:
-                return "#ef4444";
+                return "#f87171";
             case NotificationType.Info:
                 return "#eab308";
             case NotificationType.Success:
                 return "#22c55e";
             case NotificationType.Warning:
-                return "#f97316";
+                return "#fb923c";
             default:
                 return "";
         }
     })();
 </script>
 
-<div class="notif {notification.type} flex-col">
+<div class="notif {notification.type} flex-col bg-slate-700/[0.25]">
     <div class="p-3">
         <div class="flex flex-row">
-            <Icon style="min-width: 29px; min-height: 29px; width: 29px; height: 29px; border-radius: 5px; padding: 3px; background-color: {backgroundColor}; color: white"
-                  class="mr-3"
+            <Icon style="min-width: 23px; min-height: 23px; width: 23px; height: 23px; color: {color}"
+                  class="mr-2 mt-0.5"
                   src={notification.icon ?? autoselectedIcon}
             />
             <div class="float-right"
@@ -90,10 +90,10 @@
 					: ''}
             >
                 {#if notification.title}
-                    <div class="font-bold">{notification.title}</div>
+                    <div class="font-extrabold" style="color: {color}">{notification.title}</div>
                 {/if}
                 {#if notification.message}
-                    <div class="text-xs pt-1">
+                    <div class="text-xs text-gray-300 pt-0.5">
                         {#if notification.message}
                             {@html md.render(notification.message)}
                         {/if}
@@ -104,13 +104,13 @@
         {#if actions.length > 0}
             <div
                     class="pt-1"
-                    style="padding-left: 38px;{isLinux
+                    style="padding-left: 30.5px;{isLinux
 					? 'margin-left:0.7rem;'
 					: ''}"
             >
                 {#each actions as action}
                     <button
-                            class="bg-slate-900 mr-2 rounded-md py-1 px-1.5 text-xs text-neutral-300"
+                            class="bg-slate-900/[0.35] mr-2 rounded-md py-1 px-1.5 text-xs text-gray-400"
                             on:click={() => {
 							if (action.callback) {
 								const result = (
@@ -139,7 +139,6 @@
   $baseColor: #1e293b;
   .notif {
     display: flex;
-    background: rgba(20,20,20,0.1);
     backdrop-filter: blur(10px);
     border-radius: 0.6rem;
     width: 100%;
