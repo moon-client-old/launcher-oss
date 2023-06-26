@@ -4,14 +4,24 @@
     import IconButton from "$lib/component/IconButton.svelte";
     import Button from "$lib/component/Button.svelte";
     import type {Channel} from "../../stores";
+    import {Version} from "../../stores";
     import {createEventDispatcher} from "svelte";
+    import type {type Writable} from "svelte/store";
+    import {get} from "svelte/store";
 
-    function date(time: bigint): string {
-        const date = new Date(Number(time));
-        return timeDifference(new Date(), date)
+    class ChannelContext {
+        // @ts-ignore
+        version: Version
     }
 
-    function timeDifference(current: Date, previous: Date): string {
+    // Formats the release date of a version
+    function formatReleaseDate(time: bigint): string {
+        const date = new Date(Number(time));
+        return formatTimeDifference(new Date(), date)
+    }
+
+    // Formats the difference between two given dates
+    function formatTimeDifference(current: Date, previous: Date): string {
         const msPerMinute: number = 60 * 1000;
         const msPerHour: number = msPerMinute * 60;
         const msPerDay: number = msPerHour * 24;
@@ -38,10 +48,16 @@
             const years: number = Math.round(elapsed / msPerYear);
             return years + 'y ago';
         }
-
     }
 
     export let channel: Channel;
+
+    // Handle the writable context passed to the card
+    export let writableContext: Writable<ChannelContext>;
+    let context = get(writableContext);
+    writableContext.subscribe(newContext => {
+        context = newContext;
+    });
 
     const dispatch = createEventDispatcher<{
         settings: void;
@@ -55,15 +71,17 @@
         <p style="font-size: 0.78rem" class="text-gray-400">{channel.description}</p>
     </div>
     <div class="flex flex-row gap-x-1 pt-7 justify-center items-center">
-        <Button class="text-xs px-2.5" icon={Play} small={true} full={false}>Launch</Button>
+        <Button class="text-xs px-2.5" icon={Play} small={true} full={false}>
+            Launch
+        </Button>
         <div class="ml-auto flex justify-center items-center">
-            <p class="p-1 rounded-lg text-xs bg-slate-800/[0.5] flex flex-row mr-1">
+            <p class="p-1 px-1.5 rounded-lg text-xs bg-slate-800/[0.5] flex flex-row mr-1">
                 <Icon class="w-4 mr-1.5" src={ArrowPath} solid></Icon>
-                <span>{date(channel.lastUpdated)}</span>
+                <span>{formatReleaseDate(context.version.releasedAt)}</span>
             </p>
-            <p class="p-1 rounded-lg text-xs bg-slate-800/[0.5] flex flex-row mr-3">
+            <p class="p-1 px-1.5 rounded-lg text-xs bg-slate-800/[0.5] flex flex-row mr-3">
                 <Icon class="w-4 mr-1.5" src={CircleStack} solid></Icon>
-                <span>{channel.latestVersion}</span>
+                <span>{context.version.name}</span>
             </p>
             <IconButton class="mr-0.5" src={ListBullet} on:click={dispatch("changelog")}></IconButton>
             <IconButton src={Cog6Tooth} on:click={function() { dispatch("settings") }}></IconButton>

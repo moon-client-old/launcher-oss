@@ -17,7 +17,6 @@
 		if (url == $page.route.id) {
 			classList += 'bg-slate-800/[0.7]';
 		}
-		console.log(low);
 		if (!low || onSameUrl) {
 			classList += ' text-white';
 		}

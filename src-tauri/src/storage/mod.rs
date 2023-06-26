@@ -18,6 +18,7 @@ pub enum StorageType {
     Login,
     GameSettings,
     WineSettings, // TODO: Those are for later once Wine is actually implemented
+    VersionSettings,
 }
 
 /// All errors which can occur upon saving or loading config files
@@ -35,6 +36,7 @@ impl NamedStorage for StorageType {
             StorageType::Login => "login",
             StorageType::GameSettings => "game",
             StorageType::WineSettings => "wine",
+            StorageType::VersionSettings => "version",
             _ => "unknown",
         };
     }

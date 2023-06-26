@@ -54,7 +54,7 @@ ${[100, 200, 300, 400, 500, 600, 700, 800, 900]
   :global(*::-webkit-scrollbar-thumb) {
     background-color: $scrollbarFg;
     border-radius: 20px;
-    border: 3px solid $scrollbarBg;
+    border: 4px solid $scrollbarBgTrack;
     transition: background-color 0.2s;
   }
 

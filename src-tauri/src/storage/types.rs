@@ -13,3 +13,15 @@ pub struct GameSettingData {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy)]
 pub struct WineSettingData {}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VersionSettingData {
+    pub selections: Vec<VersionSelectionData>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VersionSelectionData {
+    pub channel: String,
+    pub preferred_version: String,
+    pub requires_latest: bool,
+}

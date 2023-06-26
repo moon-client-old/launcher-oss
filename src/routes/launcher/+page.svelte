@@ -1,82 +1,128 @@
 <script lang="ts">
     import Button from '../../lib/component/Button.svelte';
-
     import SideBar from '../../lib/general/SideBar.svelte';
     import {fade} from "svelte/transition";
     import {Channel, UserContext, userContext, Version} from '../../stores';
-    import {get} from "svelte/store";
-    import {Play} from "@steeze-ui/heroicons";
-    import IconButton from "$lib/component/IconButton.svelte";
-    import {
-        ArrowPath,
-        Bookmark,
-        Check,
-        ChevronUpDown,
-        CircleStack,
-        Cog6Tooth,
-        Icon,
-        ListBullet
-    } from "svelte-hero-icons";
+    import {get, writable, type Writable} from "svelte/store";
+    import {Check, ChevronUpDown, Icon} from "svelte-hero-icons";
     import {
         Dialog,
         DialogOverlay,
         DialogTitle,
-        DialogDescription, Transition, TransitionChild,
         Listbox,
         ListboxButton,
-        ListboxOptions,
         ListboxOption,
+        ListboxOptions,
+        Transition,
+        TransitionChild,
     } from "@rgossiaux/svelte-headlessui";
     import ChannelCard from "./ChannelCard.svelte";
     import Toggle from "$lib/component/Toggle.svelte";
+    import {invoke} from "@tauri-apps/api/tauri";
 
-    const people = [
-        {id: 1, name: "Durward Reynolds", unavailable: false},
-        {id: 2, name: "Kenton Towne", unavailable: false},
-        {id: 3, name: "Therese Wunsch", unavailable: false},
-        {id: 4, name: "Benedict Kessler", unavailable: true},
-        {id: 5, name: "Katelyn Rohan", unavailable: false},
-    ];
-    let selectedPerson = people[0];
-
-    let isOpen = true;
+    let context: UserContext = get(userContext);
     let settings = null;
     let selected = null;
     let settingsContext = null;
-    let selectedVersionId = null;
-    let changelog = null;
 
+    let channelVersionMap: Map<Channel, Writable<ChannelContext>> = new Map<Channel, Writable<ChannelContext>>();
+
+    // Holds information about a channels selected version
+    export class ChannelContext {
+        // @ts-ignore
+        version: Version | undefined
+        requiresLatest: boolean
+    }
+
+    // Holds information about a currently running setting edit session
     class SettingsContext {
         selectedId: string
         selectedVersion: Version
+        channel: Channel
+        requiresLatest: boolean = true
 
-        from(channel: Channel) {
-            selectedVersionId = channel.latestVersion;
-            this.selectedId = channel.latestVersion;
+        from(channel: Channel, context: ChannelContext) {
+            this.channel = channel;
+            this.selectedId = context.version.id;
+            this.requiresLatest = context.requiresLatest;
+            // Find a suitable channel version
             channel.versions.forEach((version) => {
-                if (this.selectedId == version.id) {
+                if (this.selectedId === version.id) {
                     this.selectedVersion = version;
                 }
             });
         }
 
-        fromSpecific(channel: Channel, id: string) {
-            selectedVersionId = id;
+        fromSpecific(channel: Channel, id: string, requiresLatest: boolean) {
+            this.channel = channel;
             this.selectedId = id;
+            this.requiresLatest = requiresLatest;
+            // Find a suitable channel version
             channel.versions.forEach((version) => {
-                if (this.selectedId == version.id) {
+                if (this.selectedId === version.id) {
                     this.selectedVersion = version;
                 }
             });
         }
     }
 
-    function computeNewContext(event: CustomEvent) {
-        settingsContext = new SettingsContext();
-        settingsContext.fromSpecific(selected, event.detail);
+    // Finds the channel context of a channel
+    async function findContextOf(channel: Channel): Promise<Writable<ChannelContext> | undefined> {
+        let version = channelVersionMap.get(channel);
+        // If version is null we set one first
+        if (version == undefined) {
+            await invoke('load_selection_settings_for', {channel: channel.name})
+                .then(obj => {
+                    let preferred = obj.preferred_version;
+                    // We might want the latest version instead
+                    if (obj.requires_latest) {
+                        preferred = channel.latestVersion;
+                    }
+                    let version = channel.versions.find(version => {
+                        return version.id == preferred;
+                    });
+                    const channelContext = new ChannelContext();
+                    channelContext.version = version;
+                    channelContext.requiresLatest = obj.requires_latest;
+                    channelVersionMap.set(channel, writable(channelContext));
+                });
+        }
+        return channelVersionMap.get(channel);
     }
 
-    let context: UserContext = get(userContext);
+    // Updates the selection based on the new selected value
+    function computeNewContext(event: CustomEvent) {
+        let oldRequiresLatest = settingsContext.requiresLatest;
+        settingsContext = new SettingsContext();
+        settingsContext.fromSpecific(selected, event.detail, oldRequiresLatest);
+    }
+
+    // Saves the current settings using the currently visible settings context
+    async function saveCurrentSettings() {
+        await invoke('save_selection_settings_for', {
+            channel: settingsContext.channel.name,
+            version: settingsContext.selectedVersion.id,
+            alwaysLatest: settingsContext.requiresLatest
+        });
+        let context = await findContextOf(settingsContext.channel);
+        // Update version if not undefined
+        if (context != undefined) {
+            context.update((ctx) => {
+                ctx.version = settingsContext.selectedVersion;
+                ctx.requiresLatest = settingsContext.requiresLatest;
+                // Use latest if wanted
+                if (settingsContext.requiresLatest) {
+                    // Find the suitable channel version (latest)
+                    settingsContext.channel.versions.forEach((version) => {
+                        if (version.id === settingsContext.channel.latestVersion) {
+                            ctx.version = version;
+                        }
+                    });
+                }
+                return ctx;
+            });
+        }
+    }
 
 </script>
 
@@ -89,17 +135,23 @@
         </div>
         <div class="grid grid-cols-1 gap-5">
             {#each context.channels as channel}
-                <ChannelCard channel={channel} on:settings={function() {
-                  settings = channel;
-                  selected = channel;
-                  settingsContext = new SettingsContext();
-                  settingsContext.from(channel);
-                }}></ChannelCard>
+                {#await findContextOf(channel)}
+                {:then context}
+                    <ChannelCard channel={channel} writableContext={context} on:settings={
+                         function() {
+                            let channelContext = get(context);
+                            settings = channel;
+                            selected = channel;
+                            settingsContext = new SettingsContext();
+                            settingsContext.from(channel, channelContext);
+                         }
+                    }></ChannelCard>
+                {:catch error}
+                    <p>{error}</p>
+                {/await}
             {/each}
         </div>
     </div>
-
-
 </div>
 <Transition appear show={settings != null}>
     <Dialog
@@ -134,15 +186,16 @@
                     <DialogTitle as="h3" class="text-2xl font-bold leading-6 text-white">
                         Settings
                     </DialogTitle>
-                    <p class="text-white text-xs text-gray-400 mt-1">Configure channel specific properties for {selected.name}</p>
+                    <p class="text-white text-xs text-gray-400 mt-1">Configure channel specific properties
+                        for {selected.name}</p>
                     <div class="flex flex-col gap-y-2.5 mt-2">
-                        <Listbox class="z-50" bind:value={selectedVersionId} on:change={computeNewContext}>
+                        <Listbox class="z-50" bind:value={settingsContext.selectedId} on:change={computeNewContext}>
                             <div class="relative mt-1">
                                 <ListboxButton
                                         class="w-full py-2 pl-3 pr-10 text-left bg-slate-900/[0.5] rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
                                     <span class="block text-gray-300 truncate">{settingsContext.selectedVersion.name}</span>
                                     <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                        <Icon class="w-5 h-5 text-gray-300" src={ChevronUpDown} aria-hidden="true" />
+                                        <Icon class="w-5 h-5 text-gray-300" src={ChevronUpDown} aria-hidden="true"/>
                                     </span>
                                 </ListboxButton>
                                 <Transition
@@ -157,14 +210,14 @@
                                             class="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-slate-900 rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                         {#each selected.versions as version}
                                             <ListboxOption
-                                                    class={({ active }) =>`cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
+                                                    class={({ active }) =>`transition cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
                                                     value={version.id}
                                                     let:selected
                                             >
                                                 <span class={`block truncate ${selected ? "font-medium" : "font-normal"}`}>{version.name}</span>
                                                 {#if selected}
                                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-400">
-                                                        <Icon class="w-5 h-5" aria-hidden="true" src={Check} />
+                                                        <Icon class="w-5 h-5" aria-hidden="true" src={Check}/>
                                                     </span>
                                                 {/if}
                                             </ListboxOption>
@@ -173,10 +226,14 @@
                                 </Transition>
                             </div>
                         </Listbox>
-                        <Toggle checked={true}>Always use latest version</Toggle>
+                        <Toggle bind:checked={settingsContext.requiresLatest}>Always use latest version</Toggle>
                     </div>
                     <div class="mt-4 flex flex-row gap-x-2">
-                        <Button class="px-2 text-xs" small={true} full={false} on:click={() => settings = null}>Save
+                        <Button class="px-2 text-xs" small={true} full={false} on:click={() => {
+                            saveCurrentSettings();
+                            settings = null;
+                        }}>
+                            Save
                         </Button>
                         <Button class="px-2 text-xs" small={true} full={false} on:click={() => settings = null}
                                 color="RED">Close

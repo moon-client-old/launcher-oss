@@ -1,7 +1,7 @@
 use tauri::async_runtime::Mutex;
 
 use crate::api::moon::auth::{AuthenticationError, AuthenticationResponseData};
-use crate::storage::types::{GameSettingData, LoginSettingData};
+use crate::storage::types::{GameSettingData, LoginSettingData, VersionSettingData};
 
 pub mod login;
 pub mod settings;
@@ -14,6 +14,7 @@ pub struct LauncherState {
     pub session_token: String,
     pub cached_login_data: Option<LoginSettingData>,
     pub cached_game_state: Option<GameSettingData>,
+    pub cached_selection_state: Option<VersionSettingData>,
 }
 
 #[tauri::command]
