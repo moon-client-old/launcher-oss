@@ -37,7 +37,7 @@ ${[100, 200, 300, 400, 500, 600, 700, 800, 900]
 <NotifHost/>
 
 <style lang="scss">
-  $scrollbarBgTrack: #1f2028;
+  $scrollbarBgTrack: #0f172a;
   $scrollbarFg: rgba(29, 78, 216, 0.8);
   $scrollbarBg: #1f2028;
   $scrollbarFgHover: rgba(29, 78, 216, 1);
