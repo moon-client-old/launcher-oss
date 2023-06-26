@@ -129,9 +129,14 @@
 <SideBar/>
 <div class="launcher-container" in:fade={{duration:500}}>
     <div class="w-full max-w-2xl ml-auto mr-auto">
-        <div class="ml-1 mt-1 mb-6">
-            <p class="text-2xl font-extrabold">Launch</p>
-            <p class="text-xs text-gray-300">View and run all channels you have access to</p>
+        <div class="flex flex-row items-center ml-1 mr-1 mt-1 mb-6">
+            <div class="flex flex-col">
+                <p class="text-2xl font-extrabold">Launch</p>
+                <p class="text-xs text-gray-300">View and run all channels you have access to</p>
+            </div>
+            <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}>Open Minecraft
+                Directory
+            </Button>
         </div>
         <div class="grid grid-cols-1 gap-5">
             {#each context.channels as channel}
