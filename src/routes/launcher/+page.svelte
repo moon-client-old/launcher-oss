@@ -21,11 +21,53 @@
     import {invoke} from "@tauri-apps/api/tauri";
 
     let context: UserContext = get(userContext);
+
+    // Settings dialog
     let settings = null;
     let selected = null;
     let settingsContext = null;
 
+    // Changelog dialog
+    let displayChangelog: boolean = false;
+    let changelogChannel = null;
+
     let channelVersionMap: Map<Channel, Writable<ChannelContext>> = new Map<Channel, Writable<ChannelContext>>();
+
+    // Formats the release date of a version
+    function formatReleaseDate(time: bigint): string {
+        const date = new Date(Number(time));
+        return formatTimeDifference(new Date(), date)
+    }
+
+    // Formats the difference between two given dates
+    function formatTimeDifference(current: Date, previous: Date): string {
+        const msPerMinute: number = 60 * 1000;
+        const msPerHour: number = msPerMinute * 60;
+        const msPerDay: number = msPerHour * 24;
+        const msPerMonth: number = msPerDay * 30;
+        const msPerYear: number = msPerDay * 365;
+        const elapsed: number = current - previous;
+
+        if (elapsed < msPerMinute) {
+            const seconds: number = Math.round(elapsed / 1000);
+            return seconds + 's ago';
+        } else if (elapsed < msPerHour) {
+            const minutes: number = Math.round(elapsed / msPerMinute);
+            return minutes + 'min ago';
+        } else if (elapsed < msPerDay) {
+            const hours: number = Math.round(elapsed / msPerHour);
+            return hours + 'h ago';
+        } else if (elapsed < msPerMonth) {
+            const days: number = Math.round(elapsed / msPerDay);
+            return days + 'd ago';
+        } else if (elapsed < msPerYear) {
+            const months: number = Math.round(elapsed / msPerMonth);
+            return months + 'mo ago';
+        } else {
+            const years: number = Math.round(elapsed / msPerYear);
+            return years + 'y ago';
+        }
+    }
 
     // Holds information about a channels selected version
     export class ChannelContext {
@@ -142,15 +184,25 @@
             {#each context.channels as channel}
                 {#await findContextOf(channel)}
                 {:then context}
-                    <ChannelCard channel={channel} writableContext={context} on:settings={
-                         function() {
-                            let channelContext = get(context);
-                            settings = channel;
-                            selected = channel;
-                            settingsContext = new SettingsContext();
-                            settingsContext.from(channel, channelContext);
-                         }
-                    }></ChannelCard>
+                    <ChannelCard channel={channel} writableContext={context}
+                                 on:settings={
+                            function() {
+                                // Handle opening of settings dialog
+                                let channelContext = get(context);
+                                settings = channel;
+                                selected = channel;
+                                settingsContext = new SettingsContext();
+                                settingsContext.from(channel, channelContext);
+                            }
+                        }
+                                 on:changelog={
+                            function() {
+                                // Handle opening of changelog dialog
+                                displayChangelog = true;
+                                changelogChannel = channel;
+                            }
+                        }
+                    ></ChannelCard>
                 {:catch error}
                     <p>{error}</p>
                 {/await}
@@ -158,10 +210,12 @@
         </div>
     </div>
 </div>
+
+<!-- Settings Dialog -->
 <Transition appear show={settings != null}>
     <Dialog
             as="div"
-            class="fixed inset-0 z-10 overflow-y-auto w-full"
+            class="fixed inset-0 z-10 overflow-y-auto w-full shadow-xl"
             on:close={() => settings = null}
     >
         <div class="min-h-screen px-4 text-center">
@@ -215,7 +269,7 @@
                                             class="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-slate-900 rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                         {#each selected.versions as version}
                                             <ListboxOption
-                                                    class={({ active }) =>`transition cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
+                                                    class={({ active }) =>`transition rounded-md cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
                                                     value={version.id}
                                                     let:selected
                                             >
@@ -249,3 +303,65 @@
         </div>
     </Dialog>
 </Transition>
+
+<!-- Changelog Dialog -->
+<Transition appear show={displayChangelog}>
+    <Dialog
+            as="div"
+            class="fixed inset-0 z-10 overflow-y-auto w-full shadow-xl"
+            on:close={() => displayChangelog = false}
+    >
+        <div class="min-h-screen px-4 text-center">
+            <TransitionChild
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+            >
+                <DialogOverlay class="fixed inset-0 bg-slate-900/[0.25]"/>
+            </TransitionChild>
+
+            <TransitionChild
+                    enter="ease-out duration-200"
+                    enterFrom="scale-95"
+                    enterTo="scale-100"
+                    leave="ease-in duration-100"
+                    leaveFrom="scale-100"
+                    leaveTo="scale-95"
+            >
+                <!-- This element is to trick the selected rendering engine (depends on os, webview 2 on windows for example) into centering the modal contents -->
+                <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
+                <div class="inline-block max-w-md p-6 my-8 text-left align-middle transition-all transform bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-2xl shadow-xl"
+                     style="min-width: 600px; backdrop-filter: blur(50px)">
+                    <DialogTitle as="h3" class="text-2xl font-bold leading-6 text-white">
+                        Changelog
+                    </DialogTitle>
+                    <p class="text-white text-xs text-gray-400 mt-1">View all recent changes made to this channel</p>
+                    <div class="flex flex-col overflow-y-scroll max-h-96">
+                        {#each {length: changelogChannel.versions.length} as _, index}
+                            {@const reverseIndex = changelogChannel.versions.length - 1 - index}
+                            {@const version = changelogChannel.versions[reverseIndex]}
+
+                            <span class="mt-2"></span>
+                            <p class="font-bold text-white mb-0" style="font-size: 1.2rem">{version.name}</p>
+                            <p class="text-xs text-gray-400">was released {formatReleaseDate(version.releasedAt)}</p>
+                            <span class="mt-1"></span>
+                            <p style="white-space: pre-line; font-size: 0.8rem" class="text-slate-300 max-h-screen">
+                                {version.changelog}
+                            </p>
+                        {/each}
+                    </div>
+                    <div class="mt-4 flex flex-row gap-x-2">
+                        <Button class="px-2 text-xs" small={true} full={false}
+                                on:click={() => displayChangelog = false}>
+                            Close
+                        </Button>
+                    </div>
+                </div>
+            </TransitionChild>
+        </div>
+    </Dialog>
+</Transition>
+

@@ -84,9 +84,9 @@
             <span>{context.version.name}</span>
         </p>
         <div class="ml-auto flex justify-center items-center">
-            <IconButton src={ListBullet} on:click={dispatch("changelog")}></IconButton>
+            <IconButton src={ListBullet} on:click={() => dispatch("changelog")}></IconButton>
             <span class="mr-0.5"></span>
-            <IconButton src={Cog6Tooth} on:click={function() { dispatch("settings") }}></IconButton>
+            <IconButton src={Cog6Tooth} on:click={() => dispatch("settings")}></IconButton>
         </div>
     </div>
 </div>

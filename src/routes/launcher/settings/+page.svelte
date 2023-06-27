@@ -92,6 +92,15 @@
 
 <SideBar/>
 <div class="launcher-container" in:fade={{duration:500}}>
+    <div class="flex flex-row items-center ml-1 mr-1 mt-1 mb-6">
+        <div class="flex flex-col">
+            <p class="text-2xl font-extrabold">Settings</p>
+            <p class="text-xs text-gray-300">Configure all types of properties which are used to launch your game</p>
+        </div>
+        <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}>Open Launcher
+            Directory
+        </Button>
+    </div>
     <div class="items-center bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-lg px-5 py-5 shadow-lg"
          style="backdrop-filter: blur(100px)">
         <h2 class="text-xl font-bold">Game settings</h2>

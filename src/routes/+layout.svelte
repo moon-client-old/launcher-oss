@@ -48,6 +48,7 @@ ${[100, 200, 300, 400, 500, 600, 700, 800, 900]
 
   :global(*::-webkit-scrollbar-track) {
     background: $scrollbarBgTrack;
+    border-radius: 8px;
     opacity: 0.3;
   }
 
