@@ -23,13 +23,13 @@
     let context: UserContext = get(userContext);
 
     // Settings dialog
-    let settings = null;
-    let selected = null;
-    let settingsContext = null;
+    let settings: Channel;
+    let constantCached: Channel;
+    let settingsContext: SettingsContext;
 
     // Changelog dialog
     let displayChangelog: boolean = false;
-    let changelogChannel = null;
+    let changelogChannel: Channel;
 
     let channelVersionMap: Map<Channel, Writable<ChannelContext>> = new Map<Channel, Writable<ChannelContext>>();
 
@@ -46,6 +46,7 @@
         const msPerDay: number = msPerHour * 24;
         const msPerMonth: number = msPerDay * 30;
         const msPerYear: number = msPerDay * 365;
+        // @ts-ignore
         const elapsed: number = current - previous;
 
         if (elapsed < msPerMinute) {
@@ -73,17 +74,21 @@
     export class ChannelContext {
         // @ts-ignore
         version: Version | undefined
-        requiresLatest: boolean
+        requiresLatest: boolean | undefined
     }
 
     // Holds information about a currently running setting edit session
     class SettingsContext {
-        selectedId: string
-        selectedVersion: Version
-        channel: Channel
+        selectedId: string | undefined
+        selectedVersion: Version | undefined
+        channel: Channel | undefined
         requiresLatest: boolean = true
 
         from(channel: Channel, context: ChannelContext) {
+            // Make sure nothing inside context is not undefined
+            if (context.version == undefined || context.requiresLatest == undefined) {
+                return;
+            }
             this.channel = channel;
             this.selectedId = context.version.id;
             this.requiresLatest = context.requiresLatest;
@@ -115,8 +120,10 @@
         if (version == undefined) {
             await invoke('load_selection_settings_for', {channel: channel.name})
                 .then(obj => {
+                    // @ts-ignore
                     let preferred = obj.preferred_version;
                     // We might want the latest version instead
+                    // @ts-ignore
                     if (obj.requires_latest) {
                         preferred = channel.latestVersion;
                     }
@@ -125,6 +132,7 @@
                     });
                     const channelContext = new ChannelContext();
                     channelContext.version = version;
+                    // @ts-ignore
                     channelContext.requiresLatest = obj.requires_latest;
                     channelVersionMap.set(channel, writable(channelContext));
                 });
@@ -136,11 +144,15 @@
     function computeNewContext(event: CustomEvent) {
         let oldRequiresLatest = settingsContext.requiresLatest;
         settingsContext = new SettingsContext();
-        settingsContext.fromSpecific(selected, event.detail, oldRequiresLatest);
+        settingsContext.fromSpecific(settings, event.detail, oldRequiresLatest);
     }
 
     // Saves the current settings using the currently visible settings context
     async function saveCurrentSettings() {
+        // Make sure nothing is undefined
+        if (settingsContext.channel == undefined || settingsContext.selectedVersion == undefined) {
+            return;
+        }
         await invoke('save_selection_settings_for', {
             channel: settingsContext.channel.name,
             version: settingsContext.selectedVersion.id,
@@ -149,13 +161,19 @@
         let context = await findContextOf(settingsContext.channel);
         // Update version if not undefined
         if (context != undefined) {
+            // @ts-ignore
             context.update((ctx) => {
                 ctx.version = settingsContext.selectedVersion;
                 ctx.requiresLatest = settingsContext.requiresLatest;
                 // Use latest if wanted
                 if (settingsContext.requiresLatest) {
+                    // Make sure nothing is undefined
+                    if (settingsContext.channel == undefined) {
+                        return;
+                    }
                     // Find the suitable channel version (latest)
                     settingsContext.channel.versions.forEach((version) => {
+                        // @ts-ignore
                         if (version.id === settingsContext.channel.latestVersion) {
                             ctx.version = version;
                         }
@@ -166,6 +184,10 @@
         }
     }
 
+    // Opens the minecraft directory
+    function invokeFolderOpen() {
+        invoke('open_directory_type', {"directory": "Minecraft"})
+    }
 </script>
 
 <SideBar/>
@@ -176,7 +198,8 @@
                 <p class="text-2xl font-extrabold">Launch</p>
                 <p class="text-xs text-gray-300">View and run all channels you have access to</p>
             </div>
-            <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}>Open Minecraft
+            <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}
+                    on:click={invokeFolderOpen}>Open Minecraft
                 Directory
             </Button>
         </div>
@@ -188,9 +211,10 @@
                                  on:settings={
                             function() {
                                 // Handle opening of settings dialog
+                                // @ts-ignore
                                 let channelContext = get(context);
                                 settings = channel;
-                                selected = channel;
+                                constantCached = channel;
                                 settingsContext = new SettingsContext();
                                 settingsContext.from(channel, channelContext);
                             }
@@ -246,7 +270,7 @@
                         Settings
                     </DialogTitle>
                     <p class="text-white text-xs text-gray-400 mt-1">Configure channel specific properties
-                        for {selected.name}</p>
+                        for {constantCached.name}</p>
                     <div class="flex flex-col gap-y-2.5 mt-2">
                         <Listbox class="z-50" bind:value={settingsContext.selectedId} on:change={computeNewContext}>
                             <div class="relative mt-1">
@@ -267,7 +291,7 @@
                                 >
                                     <ListboxOptions
                                             class="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-slate-900 rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                        {#each selected.versions as version}
+                                        {#each constantCached.versions as version}
                                             <ListboxOption
                                                     class={({ active }) =>`transition rounded-md cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
                                                     value={version.id}

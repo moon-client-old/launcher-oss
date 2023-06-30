@@ -3,6 +3,7 @@ use tauri::async_runtime::Mutex;
 use crate::api::moon::auth::{AuthenticationError, AuthenticationResponseData};
 use crate::storage::types::{GameSettingData, LoginSettingData, VersionSettingData};
 
+pub mod folder;
 pub mod login;
 pub mod settings;
 

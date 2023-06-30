@@ -88,6 +88,11 @@
                 );
             })
     }
+
+    // Opens the settings directory
+    function invokeFolderOpen() {
+        invoke('open_directory_type', {"directory": "Settings"})
+    }
 </script>
 
 <SideBar/>
@@ -97,7 +102,8 @@
             <p class="text-2xl font-extrabold">Settings</p>
             <p class="text-xs text-gray-300">Configure all types of properties which are used to launch your game</p>
         </div>
-        <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}>Open Launcher
+        <Button class="ml-auto px-4 border border-blue-500 hover:border-blue-400" full={false}
+                on:click={invokeFolderOpen}>Open Launcher
             Directory
         </Button>
     </div>

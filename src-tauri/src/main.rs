@@ -30,6 +30,7 @@ fn main() {
             gui::settings::load_selection_settings,
             gui::settings::load_selection_settings_for,
             gui::settings::save_selection_settings_for,
+            gui::folder::open_directory_type
         ])
         .run(tauri::generate_context!())
         .expect("error while running gui application");
