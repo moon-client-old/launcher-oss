@@ -1,5 +1,5 @@
 use crate::api::endpoint::Endpoint;
-use crate::api::endpoint::EndpointType::SERIAL;
+use crate::api::endpoint::EndpointType::Serial;
 use crate::gui::LauncherState;
 use lazy_static::lazy_static;
 use reqwest::header::HeaderMap;
@@ -23,15 +23,18 @@ pub async fn create_request(
     endpoint: impl Endpoint,
 ) -> Result<Response, reqwest::Error> {
     let hwid = state.serial.as_str();
+
     let mut request_headers = endpoint.headers().unwrap_or(HeaderMap::new());
     request_headers.insert("User-Agent", HeaderValue::from_static(USER_AGENT));
+
     // If the request wants a serial code header we have to put it now
-    if endpoint.request_type() == SERIAL {
+    if endpoint.request_type() == Serial {
         request_headers.insert(
             "Launcher-User-Serial",
             HeaderValue::from_str(hwid).unwrap_or(HeaderValue::from_static(FALLBACK_SERIAL)),
         );
     }
+
     REQWEST_CLIENT
         .get(endpoint.url())
         .headers(request_headers)

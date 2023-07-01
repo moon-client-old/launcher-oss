@@ -4,7 +4,6 @@
 use tauri::async_runtime::Mutex;
 
 use crate::gui::LauncherState;
-use crate::proprietary::PROPRIETARY_LIBRARY;
 
 mod api;
 mod gui;
