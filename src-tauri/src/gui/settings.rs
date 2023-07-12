@@ -11,17 +11,18 @@ pub async fn load_game_settings(
     let mut state = state.lock().await;
 
     // Load data if it is not present in state cache yet
-    return if let None = state.cached_game_state {
-        let loaded_data = crate::storage::load_storage_data(
-            StorageType::GameSettings,
-            GameSettingData { memory: 2048 },
-        )?;
+    match state.cached_game_state {
+        Some(data) => Ok(data),
+        None => {
+            let loaded_data = crate::storage::load_storage_data(
+                StorageType::GameSettings,
+                GameSettingData { memory: 2048 },
+            )?;
 
-        state.cached_game_state = Some(loaded_data);
-        Ok(loaded_data)
-    } else {
-        Ok(state.cached_game_state.unwrap())
-    };
+            state.cached_game_state = Some(loaded_data);
+            Ok(loaded_data)
+        }
+    }
 }
 
 /// Loads the selection settings from the working directory
@@ -32,19 +33,20 @@ pub async fn load_selection_settings(
     let mut state = state.lock().await;
 
     // Load data if it is not present in state cache yet
-    return if let None = state.cached_selection_state {
-        let loaded_data = crate::storage::load_storage_data(
-            StorageType::VersionSettings,
-            VersionSettingData {
-                selections: Vec::new(),
-            },
-        )?;
+    match state.cached_selection_state {
+        Some(ref data) => Ok(data.clone()),
+        None => {
+            let loaded_data = crate::storage::load_storage_data(
+                StorageType::VersionSettings,
+                VersionSettingData {
+                    selections: Vec::new(),
+                },
+            )?;
 
-        state.cached_selection_state = Some(loaded_data.clone());
-        Ok(loaded_data.clone())
-    } else {
-        Ok(state.cached_selection_state.clone().unwrap())
-    };
+            state.cached_selection_state = Some(loaded_data.clone());
+            Ok(loaded_data)
+        }
+    }
 }
 
 /// Loads the selection settings from the working directory
@@ -63,15 +65,14 @@ pub async fn load_selection_settings_for(
     let selection_data = selection_settings
         .selections
         .into_iter()
-        .find(|selection| {
-            return selection.channel == channel;
-        })
+        .find(|selection| selection.channel == channel)
         .unwrap_or(VersionSelectionData {
             channel,
             preferred_version: "".to_string(),
             requires_latest: true,
         });
-    return Ok(selection_data);
+
+    Ok(selection_data)
 }
 
 /// Saves the game settings to the working directory
@@ -91,6 +92,7 @@ pub async fn save_game_settings(
         }
     };
     state.cached_game_state = Some(game_settings);
+
     Ok(())
 }
 
@@ -111,7 +113,7 @@ pub async fn save_selection_settings_for(
         });
 
     // Update the selection data (don't ask what this is, but i call it the definition of shitty code)
-    let selections = current_selection.selections.clone();
+    let selections = current_selection.selections;
     let mut new_selection_data = Vec::new();
     let mut found_existing_channel = false;
     for existing_selection in selections {
@@ -119,7 +121,7 @@ pub async fn save_selection_settings_for(
             new_selection_data.push(VersionSelectionData {
                 channel: channel.clone(),
                 preferred_version: version.clone(),
-                requires_latest: always_latest.clone(),
+                requires_latest: always_latest,
             });
             found_existing_channel = true;
         } else {
@@ -136,7 +138,7 @@ pub async fn save_selection_settings_for(
         new_selection_data.push(VersionSelectionData {
             channel: channel.clone(),
             preferred_version: version.clone(),
-            requires_latest: always_latest.clone(),
+            requires_latest: always_latest,
         });
     }
 

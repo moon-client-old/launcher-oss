@@ -12,20 +12,21 @@ pub async fn load_login_settings(
     let mut state = state.lock().await;
 
     // Load data if it is not present in state cache yet
-    return if let None = state.cached_login_data {
-        let loaded_data = crate::storage::load_storage_data(
-            StorageType::Login,
-            LoginSettingData {
-                uid: -1,
-                remember_me: true,
-            },
-        )?;
+    match state.cached_login_data {
+        Some(data) => Ok(data),
+        None => {
+            let loaded_data = crate::storage::load_storage_data(
+                StorageType::Login,
+                LoginSettingData {
+                    uid: -1,
+                    remember_me: true,
+                },
+            )?;
 
-        state.cached_login_data = Some(loaded_data);
-        Ok(loaded_data)
-    } else {
-        Ok(state.cached_login_data.unwrap())
-    };
+            state.cached_login_data = Some(loaded_data);
+            Ok(loaded_data)
+        }
+    }
 }
 
 #[tauri::command]
@@ -39,7 +40,7 @@ pub async fn login(
     let authentication_data = crate::api::moon::auth::authenticate(&state, uid_i).await;
 
     // Update the session token if possible
-    if let Ok(data) = &authentication_data {
+    if let Ok(ref data) = authentication_data {
         state.session_token = data.session_key.clone()
     }
 
@@ -49,11 +50,11 @@ pub async fn login(
         remember_me,
     };
     state.cached_login_data = Some(login_data);
-    match crate::storage::save_storage_data(StorageType::Login, login_data) {
-        Ok(_) => {}
-        // Not too critical, we can just ignore this
-        _ => {}
-    };
+
+    #[allow(clippy::redundant_pattern_matching)]
+    if let Err(_) = crate::storage::save_storage_data(StorageType::Login, login_data) {
+        // TODO: please handle this error
+    }
 
     authentication_data
 }

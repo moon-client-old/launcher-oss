@@ -3,12 +3,12 @@ use reqwest::header::HeaderMap;
 /// All different endpoint types available
 ///
 /// ### Explanation
-/// - NORMAL: A default http request with no extra properties such as additional headers
-/// - SERIAL: A http request with the user serial attached as a header
+/// - Normal: A default http request with no extra properties such as additional headers
+/// - Serial: A http request with the user serial attached as a header
 #[derive(PartialEq)]
 pub enum EndpointType {
-    NORMAL,
-    SERIAL,
+    Normal,
+    Serial,
 }
 
 /// The base endpoint trait

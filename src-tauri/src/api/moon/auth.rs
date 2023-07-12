@@ -1,7 +1,7 @@
 use crate::api::endpoint::{Endpoint, EndpointType};
 use crate::api::moon::auth::AuthenticationError::{
-    HwidMismatch, InternalServerError, InvalidLoginRequest, InvalidUserAccount, JsonParseError,
-    NoUserFound, RequestFailed, UnknownError,
+    HwidMismatch, InternalServerError, InvalidLoginRequest, InvalidUserAccount, JsonParseFailed,
+    NoUserFound, RequestFailed, Unknown,
 };
 use crate::api::moon::BASE_URL;
 use crate::gui::LauncherState;
@@ -104,7 +104,7 @@ pub enum UserRank {
 
 impl Endpoint for AuthenticationEndpointData {
     fn url(&self) -> String {
-        return format!("{BASE_URL}auth?uid={}", self.uid);
+        format!("{BASE_URL}auth?uid={}", self.uid)
     }
 
     /// The authentication endpoint consumes a header named `Launcher-User-Serial` which is
@@ -114,13 +114,13 @@ impl Endpoint for AuthenticationEndpointData {
     /// as you cannot do much in the launcher anyways besides downloading builds and viewing their
     /// changelog
     fn request_type(&self) -> EndpointType {
-        return EndpointType::SERIAL;
+        EndpointType::Serial
     }
 
     /// We don't need any additional headers here as the [EndpointType::SERIAL] defines everything
     /// we need for this endpoint anyways
     fn headers(&self) -> Option<HeaderMap> {
-        return None;
+        None
     }
 }
 
@@ -128,13 +128,13 @@ impl Endpoint for AuthenticationEndpointData {
 #[derive(Debug, Deserialize, Serialize)]
 pub enum AuthenticationError {
     RequestFailed,
-    JsonParseError,
+    JsonParseFailed,
     InvalidLoginRequest { message: &'static str },
     InvalidUserAccount { message: &'static str },
     HwidMismatch { message: &'static str },
     NoUserFound { message: &'static str },
     InternalServerError { message: &'static str },
-    UnknownError,
+    Unknown,
 }
 
 /// Authenticates with the backend servers
@@ -143,14 +143,16 @@ pub async fn authenticate(
     uid: i64,
 ) -> Result<AuthenticationResponseData, AuthenticationError> {
     let endpoint = AuthenticationEndpointData { uid };
-    let response = crate::api::requester::create_request(&state, endpoint)
+    let response = crate::api::requester::create_request(state, endpoint)
         .await
         .map_err(|_| RequestFailed)?;
+
     let status = response.status();
     let content = response
         .text_with_charset("UTF-8")
         .await
         .map_err(|_| RequestFailed)?;
+
     // Handle error mappings if status code is not ok
     if status != StatusCode::OK {
         return Err(match content.as_str() {
@@ -159,11 +161,12 @@ pub async fn authenticate(
             "2" => HwidMismatch { message: "Your HWID does not match, please create a HWID reset" },
             "3" => NoUserFound { message: "No user with the UID you entered could be found, please make sure you entered your UID correctly" },
             "4" => InternalServerError { message: "Internal server error, please create a ticket" },
-            _ => UnknownError
+            _ => Unknown
         });
     }
+
     match serde_json::from_slice::<AuthenticationResponseData>(content.as_bytes()) {
         Ok(parsed) => Ok(parsed),
-        _ => Err(JsonParseError),
+        _ => Err(JsonParseFailed),
     }
 }

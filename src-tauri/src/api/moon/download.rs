@@ -40,6 +40,7 @@ pub struct DownloadRequestEndpointData {
 }
 
 /// Contains the response data as described in the [DownloadRequestEndpointData] documentation
+#[allow(dead_code)]
 #[derive(Deserialize)]
 pub struct DownloadResponseData {
     download_link: String,
@@ -47,25 +48,26 @@ pub struct DownloadResponseData {
 
 impl Endpoint for DownloadRequestEndpointData {
     fn url(&self) -> String {
-        return format!(
+        format!(
             "{BASE_URL}download/request?session_token={}&channel_name={}&channel_version={}",
             self.session_token, self.channel_name, self.channel_version
-        );
+        )
     }
 
     /// We don't need any authentication headers
     fn request_type(&self) -> EndpointType {
-        return EndpointType::NORMAL;
+        EndpointType::Normal
     }
 
     /// We don't need any special headers for this as the session token is passed
     /// through the query
     fn headers(&self) -> Option<HeaderMap> {
-        return None;
+        None
     }
 }
 
 /// All different errors with their mappings which can occur upon download requesting
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum DownloadRequestError {
     RequestFailed,
@@ -79,6 +81,7 @@ pub enum DownloadRequestError {
 }
 
 /// Authenticates with the backend servers
+#[allow(dead_code)]
 pub async fn request_download(
     state: &LauncherState,
     channel_name: String,
@@ -89,14 +92,17 @@ pub async fn request_download(
         channel_name,
         channel_version,
     };
-    let response = crate::api::requester::create_request(&state, endpoint)
+
+    let response = crate::api::requester::create_request(state, endpoint)
         .await
         .map_err(|_| RequestFailed)?;
+
     let status = response.status();
     let content = response
         .text_with_charset("UTF-8")
         .await
         .map_err(|_| RequestFailed)?;
+
     // Handle error mappings if status code is not ok
     if status != StatusCode::OK {
         return Err(match content.as_str() {
@@ -119,6 +125,7 @@ pub async fn request_download(
             _ => UnknownError,
         });
     }
+
     match serde_json::from_slice::<DownloadResponseData>(content.as_bytes()) {
         Ok(parsed) => Ok(parsed),
         _ => Err(JsonParseError),

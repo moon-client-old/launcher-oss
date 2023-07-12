@@ -1,12 +1,15 @@
 use crate::storage::location::MOON_WORKING_DIRECTORY;
-use downloader::Downloader;
 use lazy_static::lazy_static;
 use libloading::{Library, Symbol};
+use reqwest::{Client, StatusCode};
+use tauri::async_runtime::block_on;
+use tokio::task::block_in_place;
 
 pub const PROPRIETARY_LIBRARY_VERSION: &str = "launcher_lib-1.0";
 pub const BASE_DOWNLOAD_URL: &str = "https://cdn.moonclient.xyz/launcher/proprietary/";
 
 /// Internal library enum to provide proper error messages for serial fetching
+#[allow(dead_code)] // This is constructed by the proprietary library
 #[derive(Debug)]
 pub enum SerialProvideError {
     OsError(String),
@@ -29,6 +32,7 @@ pub unsafe fn fetch_serial() -> Result<String, SerialProvideError> {
                 panic!("Unable to find fetch_seral in proprietary library {}", e)
             }
         };
+
     function_result()
 }
 
@@ -46,24 +50,42 @@ fn load_proprietary_library() -> Library {
 
     // We have to download the library if it does not exist
     if !library_path.exists() {
-        let mut downloader = Downloader::builder()
-            .download_folder(MOON_WORKING_DIRECTORY.as_path())
-            .parallel_requests(1)
-            .build()
-            .unwrap();
-        let download_link = downloader::download::Download::new(
-            format!("{BASE_DOWNLOAD_URL}{library_name}").as_str(),
-        );
-        downloader
-            .download(&[download_link])
-            .expect("Failed to download library file");
+        match block_in_place(|| {
+            block_on(
+                Client::new()
+                    .get(format!("{BASE_DOWNLOAD_URL}{library_name}"))
+                    .send(),
+            )
+        }) {
+            Ok(res) => {
+                if res.status() != StatusCode::OK {
+                    panic!("Proprietary library returned unexpected status code: \"{}\", please open an issue on GitHub", res.status());
+                }
+
+                let data = block_in_place(|| block_on(res.bytes()))
+                    .expect("Failed to read proprietary library from response, please open an issue on GitHub");
+
+                if let Err(e) = std::fs::write(&library_path, data) {
+                    panic!("Failed to write proprietary library: \"{}\", please open an issue on GitHub", e);
+                }
+            }
+
+            Err(e) => {
+                panic!("Failed to download proprietary library: \"{}\", please open an issue on GitHub", e);
+            }
+        };
     }
 
     // Hack the mainframe by loading the library from a specific path (not really a hack, but still)
     unsafe {
         match Library::new(library_path) {
-            Ok(lib) => return lib,
-            _ => panic!("Unable to load proprietary library, please open an issue on GitHub"),
+            Ok(lib) => lib,
+            Err(e) => {
+                panic!(
+                    "Unable to load proprietary library: \"{}\", please open an issue on GitHub",
+                    e
+                );
+            }
         }
     }
 }
