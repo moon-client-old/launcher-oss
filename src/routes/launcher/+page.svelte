@@ -1,7 +1,7 @@
 <script lang="ts">
     import Button from '../../lib/component/Button.svelte';
     import SideBar from '../../lib/general/SideBar.svelte';
-    import {fade} from "svelte/transition";
+    import {fade, fly} from "svelte/transition";
     import {Channel, UserContext, userContext, Version} from '../../stores';
     import {get, writable, type Writable} from "svelte/store";
     import {Check, ChevronUpDown, Icon} from "svelte-hero-icons";
@@ -204,11 +204,12 @@
             </Button>
         </div>
         <div class="grid grid-cols-1 gap-5">
-            {#each context.channels as channel}
+            {#each context.channels as channel, i}
                 {#await findContextOf(channel)}
                 {:then context}
-                    <ChannelCard channel={channel} writableContext={context}
-                                 on:settings={
+                    <div in:fly={{y:60, delay: 200 * i}}>
+                        <ChannelCard channel={channel} writableContext={context}
+                                     on:settings={
                             function() {
                                 // Handle opening of settings dialog
                                 // @ts-ignore
@@ -219,14 +220,15 @@
                                 settingsContext.from(channel, channelContext);
                             }
                         }
-                                 on:changelog={
+                                     on:changelog={
                             function() {
                                 // Handle opening of changelog dialog
                                 displayChangelog = true;
                                 changelogChannel = channel;
                             }
                         }
-                    ></ChannelCard>
+                        ></ChannelCard>
+                    </div>
                 {:catch error}
                     <p>{error}</p>
                 {/await}

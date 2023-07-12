@@ -4,7 +4,7 @@
     import Button from "$lib/component/Button.svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import {addNotification, Notification, NotificationType} from "$lib/notification/NotificationHandler";
-    import {fade} from "svelte/transition";
+    import {fade, fly} from "svelte/transition";
 
     const unknownMessage =
         'An unknown error occurred, please create an issue on GitHub';
@@ -108,7 +108,7 @@
         </Button>
     </div>
     <div class="items-center bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-lg px-5 py-5 shadow-lg"
-         style="backdrop-filter: blur(100px)">
+         style="backdrop-filter: blur(100px)" in:fly={{y:60}}>
         <h2 class="text-xl font-bold">Game settings</h2>
         <p class="text-sm text-slate-400">All minecraft / game related settings</p>
 

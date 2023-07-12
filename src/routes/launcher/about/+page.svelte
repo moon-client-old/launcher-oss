@@ -3,7 +3,7 @@
 
     import SideBar from "../../../lib/general/SideBar.svelte";
     import {UserContext, userContext} from "../../../stores";
-    import {fade} from "svelte/transition";
+    import {fade, fly} from "svelte/transition";
 
     let context: UserContext = get(userContext);
     let date = new Date();
@@ -12,7 +12,7 @@
 <SideBar/>
 <div class="launcher-container" in:fade={{duration:500}}>
     <div class="items-center bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-lg px-5 py-5 shadow-lg"
-         style="backdrop-filter: blur(100px)">
+         style="backdrop-filter: blur(100px)" in:fly={{y:60}}>
         <h2 class="text-xl font-bold mb-2">Moon Launcher</h2>
         <p class="text-sm text-slate-400">&copy; 2018 - { date.getFullYear() } Moon Client (Licensed under GPL-3.0)</p>
         <p class="text-sm text-slate-400">
