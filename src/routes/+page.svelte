@@ -63,6 +63,7 @@
                     'userContextData',
                     JSON.stringify(response)
                 );
+                goto('/launcher');
                 addNotification(
                     new Notification(
                         'Logged in!',
@@ -71,7 +72,6 @@
                         3e3
                     )
                 );
-                goto('/launcher');
             })
             .catch((err) => {
                 let errorMessage = null;

@@ -293,13 +293,18 @@
                                 >
                                     <ListboxOptions
                                             class="absolute z-50 w-full py-1 mt-1 overflow-auto text-base bg-slate-900 rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                        {#each constantCached.versions as version}
+                                        {#each {length: constantCached.versions.length} as _, index}
+                                            {@const reverseIndex = constantCached.versions.length - 1 - index}
+                                            {@const version = constantCached.versions[reverseIndex]}
                                             <ListboxOption
                                                     class={({ active }) =>`transition rounded-md cursor-default select-none relative py-2 pl-10 pr-4 ${active ? "text-blue-400 bg-blue-600/[0.2]" : "text-gray-300"}`}
                                                     value={version.id}
                                                     let:selected
                                             >
-                                                <span class={`block truncate ${selected ? "font-medium" : "font-normal"}`}>{version.name}</span>
+                                                <div class="flex-row flex justify-center items-center">
+                                                    <span class={`block truncate ${selected ? "font-bold" : "font-normal"}`}>{version.name}</span>
+                                                    <span class="block truncate ml-auto text-xs text-gray-400">released {formatReleaseDate(version.releasedAt)}</span>
+                                                </div>
                                                 {#if selected}
                                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-400">
                                                         <Icon class="w-5 h-5" aria-hidden="true" src={Check}/>
