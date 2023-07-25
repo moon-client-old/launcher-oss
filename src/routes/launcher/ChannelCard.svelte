@@ -72,8 +72,11 @@
     </div>
     <span class="border-b border-slate-50/[0.15] rounded-2xl mb-4 mt-0.5 pt-3.5"></span>
     <div class="flex flex-row gap-x-1 mt-1 justify-center items-center">
-        <Button class="text-xs px-2.5 font-semibold" icon={Play} small={true} full={false}>
+        <Button class="text-xs px-2.5 font-semibold bg-gradient-to-b from-blue-500 to-blue-600 hover:text-gray-300 transition-all ease-in-out shadow-xl" icon={Play}
+                small={true} full={false}>
+            <span class="text-shadow-btn">
             Launch
+            </span>
         </Button>
         <p class="p-1 px-1.5 rounded-lg text-xs bg-slate-800/[0.5] border border-slate-200/[0.3] flex flex-row items-center justify-center ml-1 mr-1">
             <Icon class="w-4 mr-1.5 text-gray-300" src={ArrowPath} solid></Icon>
@@ -90,3 +93,9 @@
         </div>
     </div>
 </div>
+
+<style lang="scss">
+  .text-shadow-btn {
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+  }
+</style>
