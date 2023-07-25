@@ -266,7 +266,7 @@
             >
                 <!-- This element is to trick the selected rendering engine (depends on os, webview 2 on windows for example) into centering the modal contents -->
                 <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-                <div class="inline-block max-w-md p-6 my-8 text-left align-middle transition-all transform bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-2xl shadow-xl"
+                <div class="inline-block max-w-md p-6 my-8 text-left align-middle transition-all transform bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-2xl shadow-xl overlay"
                      style="min-width: 600px; backdrop-filter: blur(50px)">
                     <DialogTitle as="h3" class="text-2xl font-bold leading-6 text-white">
                         Settings
@@ -359,8 +359,8 @@
             >
                 <!-- This element is to trick the selected rendering engine (depends on os, webview 2 on windows for example) into centering the modal contents -->
                 <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-                <div class="inline-block max-w-md p-6 my-8 text-left align-middle transition-all transform bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-2xl shadow-xl"
-                     style="min-width: 600px; backdrop-filter: blur(50px)">
+                <div class="inline-block max-w-md p-6 my-8 text-left align-middle transition-all transform bg-slate-700/[0.25] border border-slate-50/[0.15] rounded-2xl shadow-xl overlay"
+                     style="min-width: 600px;">
                     <DialogTitle as="h3" class="text-2xl font-bold leading-6 text-white">
                         Changelog
                     </DialogTitle>
@@ -390,4 +390,10 @@
         </div>
     </Dialog>
 </Transition>
+
+<style lang="scss">
+  .overlay {
+    backdrop-filter: blur(50px);
+  }
+</style>
 

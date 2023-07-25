@@ -26,6 +26,7 @@ pub async fn load_serial(state: tauri::State<'_, Mutex<LauncherState>>) -> Resul
             _ => return Err(()),
         }
     };
+    println!("ok {}", serial);
     guard.serial = serial;
     Ok(())
 }

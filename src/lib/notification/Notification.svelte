@@ -42,9 +42,9 @@
         return true;
     };
     let isLinux = false;
-    onMount(() => {
-        isLinux = navigator.userAgent.includes('Linux');
-    });
+    // onMount(() => {
+    //     isLinux = navigator.userAgent.includes('Linux');
+    // });
     let autoselectedIcon: IconSource = (() => {
         switch (notification.type) {
             case NotificationType.Error:
